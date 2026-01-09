@@ -1,3 +1,4 @@
+<img src="https://github.com/webpmp/webpmp.github.io/blob/master/design-process.png)" alt="Design Process Flow Diagram" style="max-width: 90%;">
 
   # Design Process Flow Diagram
 
