@@ -266,6 +266,12 @@ export default function App() {
   const getTotalShort = () => tasks.filter(t => t.visible).reduce((sum, task) => sum + task.shortEstimate, 0);
   const getTotalLong = () => tasks.filter(t => t.visible).reduce((sum, task) => sum + task.longEstimate, 0);
 
+  const formatDuration = (days: number) => {
+    const weeks = (days / 5).toFixed(1);
+    const months = (days / 20).toFixed(1);
+    return { days, weeks, months };
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="min-h-screen bg-gray-50 p-8">
@@ -330,6 +336,9 @@ export default function App() {
                 <div>
                   <div className="text-sm text-gray-600 mb-1">Best Case Scenario (Shortest Estimates)</div>
                   <div className="text-3xl font-semibold text-green-700">{getTotalShort()} days</div>
+                  <div className="text-sm text-green-600 mt-1">
+                    {formatDuration(getTotalShort()).weeks} weeks • {formatDuration(getTotalShort()).months} months
+                  </div>
                 </div>
                 <div className="text-green-600">
                   <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -342,6 +351,9 @@ export default function App() {
                 <div>
                   <div className="text-sm text-gray-600 mb-1">Worst Case Scenario (Longest Estimates)</div>
                   <div className="text-3xl font-semibold text-red-700">{getTotalLong()} days</div>
+                  <div className="text-sm text-red-600 mt-1">
+                    {formatDuration(getTotalLong()).weeks} weeks • {formatDuration(getTotalLong()).months} months
+                  </div>
                 </div>
                 <div className="text-red-600">
                   <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -356,6 +368,9 @@ export default function App() {
                   <div className="text-3xl font-semibold text-blue-700">
                     {getTotalShort()} - {getTotalLong()} days
                   </div>
+                  <div className="text-sm text-blue-600 mt-1">
+                    {formatDuration(getTotalShort()).weeks} - {formatDuration(getTotalLong()).weeks} weeks • {formatDuration(getTotalShort()).months} - {formatDuration(getTotalLong()).months} months
+                  </div>
                 </div>
                 <div className="text-blue-600">
                   <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -369,6 +384,7 @@ export default function App() {
               <p className="text-sm text-gray-600">
                 <strong>Note:</strong> These estimates represent the total time across all phases of the design process. 
                 Actual duration may vary based on project complexity, team size, and stakeholder availability.
+                Week calculations assume 5 working days per week. Month calculations assume 20 working days per month.
               </p>
             </div>
           </div>
