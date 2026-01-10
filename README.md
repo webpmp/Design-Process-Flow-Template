@@ -1,6 +1,6 @@
 # Design Process Flow Diagram
 
-![Design Process Flow Diagram](./screenshot.png)
+![Design Process Flow Diagram](https://github.com/webpmp/webpmp.github.io/blob/master/design-process-estimate.png)
 
 This repository contains a structured Design Process Flow Diagram built to help UX and Design Program Managers plan and estimate project timelines. The diagram outlines a comprehensive list of design and program management tasks, each with short and long duration estimates (in days).
 
@@ -50,5 +50,3 @@ npm run build
 - **Months** — Based on 20 working days per month
 
 ---
-
-*Note: To add a screenshot, take a screenshot of the application and save it as `screenshot.png` in the root directory of this project.*
