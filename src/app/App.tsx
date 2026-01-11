@@ -11,54 +11,55 @@ interface Task {
   phase: string;
   visible: boolean;
   description: string;
+  hasArrowAfter: boolean;
 }
 
 const initialTasks: Task[] = [
   // Discovery Phase
-  { id: '1', name: 'Competitive Analysis', shortEstimate: 2, longEstimate: 5, phase: 'Discovery', visible: true, description: 'Evaluate competitor products and services to identify strengths, weaknesses, and market opportunities.' },
-  { id: '2', name: 'User Interviews', shortEstimate: 3, longEstimate: 7, phase: 'Discovery', visible: true, description: 'Conduct one-on-one interviews with target users to understand their needs, behaviors, and pain points.' },
-  { id: '3', name: 'Stakeholder Interviews', shortEstimate: 2, longEstimate: 4, phase: 'Discovery', visible: true, description: 'Meet with key stakeholders to align on business goals, constraints, and success metrics.' },
-  { id: '4', name: 'Contextual Inquiry', shortEstimate: 2, longEstimate: 5, phase: 'Discovery', visible: true, description: 'Observe users in their natural environment to understand workflow and context of use.' },
-  { id: '5', name: 'Market Research', shortEstimate: 3, longEstimate: 6, phase: 'Discovery', visible: true, description: 'Analyze market trends, user demographics, and industry standards to inform design decisions.' },
-  { id: '6', name: 'Analytics Review', shortEstimate: 1, longEstimate: 3, phase: 'Discovery', visible: true, description: 'Review existing analytics data to identify usage patterns, drop-off points, and areas for improvement.' },
-  { id: '27', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Discovery', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.' },
-  { id: '28', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Discovery', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.' },
+  { id: '1', name: 'Competitive Analysis', shortEstimate: 2, longEstimate: 5, phase: 'Discovery', visible: true, description: 'Evaluate competitor products and services to identify strengths, weaknesses, and market opportunities.', hasArrowAfter: true },
+  { id: '2', name: 'User Interviews', shortEstimate: 3, longEstimate: 7, phase: 'Discovery', visible: true, description: 'Conduct one-on-one interviews with target users to understand their needs, behaviors, and pain points.', hasArrowAfter: true },
+  { id: '3', name: 'Stakeholder Interviews', shortEstimate: 2, longEstimate: 4, phase: 'Discovery', visible: true, description: 'Meet with key stakeholders to align on business goals, constraints, and success metrics.', hasArrowAfter: true },
+  { id: '4', name: 'Contextual Inquiry', shortEstimate: 2, longEstimate: 5, phase: 'Discovery', visible: true, description: 'Observe users in their natural environment to understand workflow and context of use.', hasArrowAfter: true },
+  { id: '5', name: 'Market Research', shortEstimate: 3, longEstimate: 6, phase: 'Discovery', visible: true, description: 'Analyze market trends, user demographics, and industry standards to inform design decisions.', hasArrowAfter: true },
+  { id: '6', name: 'Analytics Review', shortEstimate: 1, longEstimate: 3, phase: 'Discovery', visible: true, description: 'Review existing analytics data to identify usage patterns, drop-off points, and areas for improvement.', hasArrowAfter: true },
+  { id: '27', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Discovery', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.', hasArrowAfter: true },
+  { id: '28', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Discovery', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.', hasArrowAfter: true },
   
   // Define Phase
-  { id: '7', name: 'Synthesize User Research', shortEstimate: 2, longEstimate: 4, phase: 'Define', visible: true, description: 'Analyze data from discovery phase (interviews, observations) to find patterns and insights.' },
-  { id: '8', name: 'Create User Personas', shortEstimate: 2, longEstimate: 4, phase: 'Define', visible: true, description: 'Develop fictional characters that represent key user segments with their goals and behaviors.' },
-  { id: '9', name: 'Map User Journeys', shortEstimate: 2, longEstimate: 5, phase: 'Define', visible: true, description: 'Document the end-to-end experience of users interacting with the product or service.' },
-  { id: '10', name: 'Formulate Problem Statements', shortEstimate: 1, longEstimate: 3, phase: 'Define', visible: true, description: 'Define clear, actionable problem statements that frame the design challenge.' },
-  { id: '11', name: 'Define Objectives & Scope', shortEstimate: 1, longEstimate: 2, phase: 'Define', visible: true, description: 'Establish project goals, success criteria, and boundaries for the design effort.' },
-  { id: '12', name: 'Conduct Task Analysis', shortEstimate: 2, longEstimate: 4, phase: 'Define', visible: true, description: 'Break down user tasks into detailed steps to understand complexity and requirements.' },
-  { id: '29', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Define', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.' },
-  { id: '30', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Define', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.' },
+  { id: '7', name: 'Synthesize User Research', shortEstimate: 2, longEstimate: 4, phase: 'Define', visible: true, description: 'Analyze data from discovery phase (interviews, observations) to find patterns and insights.', hasArrowAfter: true },
+  { id: '8', name: 'Create User Personas', shortEstimate: 2, longEstimate: 4, phase: 'Define', visible: true, description: 'Develop fictional characters that represent key user segments with their goals and behaviors.', hasArrowAfter: true },
+  { id: '9', name: 'Map User Journeys', shortEstimate: 2, longEstimate: 5, phase: 'Define', visible: true, description: 'Document the end-to-end experience of users interacting with the product or service.', hasArrowAfter: true },
+  { id: '10', name: 'Formulate Problem Statements', shortEstimate: 1, longEstimate: 3, phase: 'Define', visible: true, description: 'Define clear, actionable problem statements that frame the design challenge.', hasArrowAfter: true },
+  { id: '11', name: 'Define Objectives & Scope', shortEstimate: 1, longEstimate: 2, phase: 'Define', visible: true, description: 'Establish project goals, success criteria, and boundaries for the design effort.', hasArrowAfter: true },
+  { id: '12', name: 'Conduct Task Analysis', shortEstimate: 2, longEstimate: 4, phase: 'Define', visible: true, description: 'Break down user tasks into detailed steps to understand complexity and requirements.', hasArrowAfter: true },
+  { id: '29', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Define', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.', hasArrowAfter: true },
+  { id: '30', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Define', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.', hasArrowAfter: true },
   
   // Concept Phase
-  { id: '13', name: 'User Stories', shortEstimate: 2, longEstimate: 4, phase: 'Concept', visible: true, description: 'Write user stories in the format "As a [user], I want to [action] so that [benefit]".' },
-  { id: '14', name: 'Sketching & Brainstorming', shortEstimate: 2, longEstimate: 5, phase: 'Concept', visible: true, description: 'Generate multiple design concepts through rapid sketching and ideation sessions.' },
-  { id: '15', name: 'Affinity Diagramming', shortEstimate: 1, longEstimate: 3, phase: 'Concept', visible: true, description: 'Organize ideas and insights into related groups to identify themes and priorities.' },
-  { id: '16', name: 'Story Mapping & Task Flows', shortEstimate: 2, longEstimate: 4, phase: 'Concept', visible: true, description: 'Create visual representations of user flows showing how users move through tasks.' },
-  { id: '17', name: 'Low-Fidelity Wireframing', shortEstimate: 3, longEstimate: 6, phase: 'Concept', visible: true, description: 'Develop basic wireframes to explore layout and information architecture concepts.' },
-  { id: '18', name: 'Paper Prototyping', shortEstimate: 2, longEstimate: 4, phase: 'Concept', visible: true, description: 'Create quick, low-cost prototypes on paper to test concepts with users early.' },
-  { id: '31', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Concept', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.' },
-  { id: '32', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Concept', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.' },
+  { id: '13', name: 'User Stories', shortEstimate: 2, longEstimate: 4, phase: 'Concept', visible: true, description: 'Write user stories in the format "As a [user], I want to [action] so that [benefit]".', hasArrowAfter: true },
+  { id: '14', name: 'Sketching & Brainstorming', shortEstimate: 2, longEstimate: 5, phase: 'Concept', visible: true, description: 'Generate multiple design concepts through rapid sketching and ideation sessions.', hasArrowAfter: true },
+  { id: '15', name: 'Affinity Diagramming', shortEstimate: 1, longEstimate: 3, phase: 'Concept', visible: true, description: 'Organize ideas and insights into related groups to identify themes and priorities.', hasArrowAfter: true },
+  { id: '16', name: 'Story Mapping & Task Flows', shortEstimate: 2, longEstimate: 4, phase: 'Concept', visible: true, description: 'Create visual representations of user flows showing how users move through tasks.', hasArrowAfter: true },
+  { id: '17', name: 'Low-Fidelity Wireframing', shortEstimate: 3, longEstimate: 6, phase: 'Concept', visible: true, description: 'Develop basic wireframes to explore layout and information architecture concepts.', hasArrowAfter: true },
+  { id: '18', name: 'Paper Prototyping', shortEstimate: 2, longEstimate: 4, phase: 'Concept', visible: true, description: 'Create quick, low-cost prototypes on paper to test concepts with users early.', hasArrowAfter: true },
+  { id: '31', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Concept', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.', hasArrowAfter: true },
+  { id: '32', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Concept', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.', hasArrowAfter: true },
   
   // Design Phase
-  { id: '19', name: 'Wireframing', shortEstimate: 3, longEstimate: 7, phase: 'Design', visible: true, description: 'Create detailed wireframes that define layout, content hierarchy, and interactions.' },
-  { id: '20', name: 'UI/Visual Design', shortEstimate: 5, longEstimate: 10, phase: 'Design', visible: true, description: 'Apply visual design including typography, color, imagery, and branding elements.' },
-  { id: '21', name: 'Interactive Prototyping', shortEstimate: 3, longEstimate: 6, phase: 'Design', visible: true, description: 'Build clickable prototypes that simulate the user experience for testing and validation.' },
-  { id: '26', name: 'Motion Design', shortEstimate: 2, longEstimate: 5, phase: 'Design', visible: true, description: 'Design and create animations, transitions, and micro-interactions to enhance user experience and guide attention.' },
-  { id: '22', name: 'UX Writing', shortEstimate: 2, longEstimate: 4, phase: 'Design', visible: true, description: 'Craft clear, concise microcopy for UI elements, error messages, and help text.' },
-  { id: '33', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Design', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.' },
-  { id: '34', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Design', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.' },
+  { id: '19', name: 'Wireframing', shortEstimate: 3, longEstimate: 7, phase: 'Design', visible: true, description: 'Create detailed wireframes that define layout, content hierarchy, and interactions.', hasArrowAfter: true },
+  { id: '20', name: 'UI/Visual Design', shortEstimate: 5, longEstimate: 10, phase: 'Design', visible: true, description: 'Apply visual design including typography, color, imagery, and branding elements.', hasArrowAfter: true },
+  { id: '21', name: 'Interactive Prototyping', shortEstimate: 3, longEstimate: 6, phase: 'Design', visible: true, description: 'Build clickable prototypes that simulate the user experience for testing and validation.', hasArrowAfter: true },
+  { id: '26', name: 'Motion Design', shortEstimate: 2, longEstimate: 5, phase: 'Design', visible: true, description: 'Design and create animations, transitions, and micro-interactions to enhance user experience and guide attention.', hasArrowAfter: true },
+  { id: '22', name: 'UX Writing', shortEstimate: 2, longEstimate: 4, phase: 'Design', visible: true, description: 'Craft clear, concise microcopy for UI elements, error messages, and help text.', hasArrowAfter: true },
+  { id: '33', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Design', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.', hasArrowAfter: true },
+  { id: '34', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Design', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.', hasArrowAfter: true },
   
   // Deliver Phase
-  { id: '23', name: 'Design Documentation', shortEstimate: 2, longEstimate: 5, phase: 'Deliver', visible: true, description: 'Create comprehensive documentation including design specifications and guidelines.' },
-  { id: '24', name: 'Developer Handoff/Review', shortEstimate: 2, longEstimate: 4, phase: 'Deliver', visible: true, description: 'Collaborate with developers to ensure accurate implementation of designs.' },
-  { id: '25', name: 'QA', shortEstimate: 3, longEstimate: 6, phase: 'Deliver', visible: true, description: 'Test the implemented design to verify it meets requirements and quality standards.' },
-  { id: '35', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Deliver', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.' },
-  { id: '36', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Deliver', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.' },
+  { id: '23', name: 'Design Documentation', shortEstimate: 2, longEstimate: 5, phase: 'Deliver', visible: true, description: 'Create comprehensive documentation including design specifications and guidelines.', hasArrowAfter: true },
+  { id: '24', name: 'Developer Handoff/Review', shortEstimate: 2, longEstimate: 4, phase: 'Deliver', visible: true, description: 'Collaborate with developers to ensure accurate implementation of designs.', hasArrowAfter: true },
+  { id: '25', name: 'QA', shortEstimate: 3, longEstimate: 6, phase: 'Deliver', visible: true, description: 'Test the implemented design to verify it meets requirements and quality standards.', hasArrowAfter: true },
+  { id: '35', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Deliver', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.', hasArrowAfter: true },
+  { id: '36', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Deliver', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.', hasArrowAfter: true },
 ];
 
 const phaseColors = {
@@ -80,6 +81,7 @@ interface TaskCardProps {
   isExpanded: boolean;
   onToggleExpanded: (id: string) => void;
   onUpdateDescription: (id: string, description: string) => void;
+  onToggleArrow: (id: string) => void;
 }
 
 const TaskCard = ({ 
@@ -93,6 +95,7 @@ const TaskCard = ({
   isExpanded,
   onToggleExpanded,
   onUpdateDescription,
+  onToggleArrow,
 }: TaskCardProps) => {
   const [{ isDragging }, drag, preview] = useDrag({
     type: 'TASK',
@@ -211,10 +214,25 @@ const TaskCard = ({
         
         {/* Arrow to next task (if not last task in phase) */}
         {!isLastInPhase && (
-          <div className="flex justify-center py-2 relative">
-            <div className="w-0.5 h-4 bg-gray-800"></div>
-            <div className="absolute w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-gray-800" style={{ top: '16px' }}></div>
-          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleArrow(task.id);
+            }}
+            className="flex justify-center py-2 relative hover:bg-gray-100 transition-colors cursor-pointer w-full group"
+            title={task.hasArrowAfter ? "Click to mark tasks as concurrent" : "Click to mark tasks as sequential"}
+          >
+            {task.hasArrowAfter ? (
+              <>
+                <div className="w-0.5 h-4 bg-gray-800 group-hover:bg-blue-600"></div>
+                <div className="absolute w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-gray-800 group-hover:border-t-blue-600" style={{ top: '16px' }}></div>
+              </>
+            ) : (
+              <div className="text-xs text-gray-500 font-semibold group-hover:text-blue-600">
+                ⫽ Concurrent
+              </div>
+            )}
+          </button>
         )}
       </div>
     </div>
@@ -224,6 +242,7 @@ const TaskCard = ({
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
+  const [showPhaseBreakdown, setShowPhaseBreakdown] = useState(false);
 
   const phases = ['Discovery', 'Define', 'Concept', 'Design', 'Deliver'];
 
@@ -252,6 +271,12 @@ export default function App() {
     ));
   };
 
+  const toggleArrow = (id: string) => {
+    setTasks(tasks.map(task =>
+      task.id === id ? { ...task, hasArrowAfter: !task.hasArrowAfter } : task
+    ));
+  };
+
   const moveTask = (dragIndex: number, hoverIndex: number, phase: string) => {
     const phaseTasks = tasks.filter(task => task.phase === phase);
     const otherTasks = tasks.filter(task => task.phase !== phase);
@@ -274,9 +299,71 @@ export default function App() {
     setTasks(newTasks);
   };
 
-  const getTotalShort = () => tasks.filter(t => t.visible).reduce((sum, task) => sum + task.shortEstimate, 0);
-  const getTotalLong = () => tasks.filter(t => t.visible).reduce((sum, task) => sum + task.longEstimate, 0);
+  // Calculate total with concurrent task support
+  const calculateTotalWithConcurrency = (type: 'short' | 'long') => {
+    let total = 0;
+    
+    // Process all visible tasks
+    const visibleTasks = tasks.filter(t => t.visible);
+    
+    // Group tasks by phase first
+    phases.forEach(phase => {
+      const phaseTasks = visibleTasks.filter(t => t.phase === phase);
+      
+      // Within each phase, identify concurrent groups
+      let i = 0;
+      while (i < phaseTasks.length) {
+        const concurrentGroup = [phaseTasks[i]];
+        
+        // Find all consecutive tasks without arrows (concurrent tasks)
+        while (i < phaseTasks.length - 1 && !phaseTasks[i].hasArrowAfter) {
+          i++;
+          concurrentGroup.push(phaseTasks[i]);
+        }
+        
+        // For concurrent group, take the max estimate
+        const groupEstimate = Math.max(
+          ...concurrentGroup.map(t => type === 'short' ? t.shortEstimate : t.longEstimate)
+        );
+        total += groupEstimate;
+        
+        i++;
+      }
+    });
+    
+    return total;
+  };
+
+  const getTotalShort = () => calculateTotalWithConcurrency('short');
+  const getTotalLong = () => calculateTotalWithConcurrency('long');
   const getAverageEstimate = () => Math.round((getTotalShort() + getTotalLong()) / 2);
+
+  // Calculate duration for a specific phase
+  const getPhaseEstimate = (phase: string, type: 'short' | 'long') => {
+    const visibleTasks = tasks.filter(t => t.visible && t.phase === phase);
+    let total = 0;
+    
+    let i = 0;
+    while (i < visibleTasks.length) {
+      const concurrentGroup = [visibleTasks[i]];
+      
+      // Find all consecutive tasks without arrows (concurrent tasks)
+      while (i < visibleTasks.length - 1 && !visibleTasks[i].hasArrowAfter) {
+        i++;
+        concurrentGroup.push(visibleTasks[i]);
+      }
+      
+      // For concurrent group, take the max estimate
+      const groupEstimate = Math.max(
+        ...concurrentGroup.map(t => type === 'short' ? t.shortEstimate : t.longEstimate)
+      );
+      total += groupEstimate;
+      
+      i++;
+    }
+    
+    return total;
+  };
 
   const formatDuration = (days: number) => {
     const weeks = (days / 5).toFixed(1);
@@ -294,9 +381,17 @@ export default function App() {
           
           {/* Project Duration Estimates */}
           <div className="mb-8 bg-white border-2 border-gray-800 p-6">
-            <h2 className="text-xl mb-4">Project Duration Estimates</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl">Project Duration Estimates</h2>
+              <button
+                onClick={() => setShowPhaseBreakdown(!showPhaseBreakdown)}
+                className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition-colors text-sm font-medium"
+              >
+                {showPhaseBreakdown ? 'Hide Phase Breakdown' : 'View Phase Breakdown'}
+              </button>
+            </div>
             
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-4"> {/* Best Case */}
               <div className="flex items-center justify-between p-4 bg-green-50 border-2 border-green-600 rounded">
                 <div>
                   <div className="text-xs text-gray-600 mb-1">Best Case Scenario</div>
@@ -312,6 +407,7 @@ export default function App() {
                 </div>
               </div>
               
+              {/* Average */}
               <div className="flex items-center justify-between p-4 bg-blue-50 border-2 border-blue-600 rounded">
                 <div>
                   <div className="text-xs text-gray-600 mb-1">Average Estimate</div>
@@ -329,6 +425,7 @@ export default function App() {
                 </div>
               </div>
               
+              {/* Worst Case */}
               <div className="flex items-center justify-between p-4 bg-red-50 border-2 border-red-600 rounded">
                 <div>
                   <div className="text-xs text-gray-600 mb-1">Worst Case Scenario</div>
@@ -344,6 +441,38 @@ export default function App() {
                 </div>
               </div>
             </div>
+
+            {/* Phase Breakdown */}
+            {showPhaseBreakdown && (
+              <div className="mt-6 pt-6 border-t border-gray-300">
+                <h3 className="text-lg font-semibold mb-4">Phase Duration Breakdown</h3>
+                <div className="space-y-3">
+                  {phases.map(phase => {
+                    const phaseColor = phaseColors[phase as keyof typeof phaseColors];
+                    const shortEstimate = getPhaseEstimate(phase, 'short');
+                    const longEstimate = getPhaseEstimate(phase, 'long');
+                    
+                    return (
+                      <div key={phase} className={`p-4 ${phaseColor.bg} border ${phaseColor.border} rounded`}>
+                        <div className="flex items-center justify-between">
+                          <div className="font-semibold text-gray-900">{phase}</div>
+                          <div className="flex gap-6 text-sm">
+                            <div className="text-right">
+                              <div className="text-xs text-gray-600">Shortest</div>
+                              <div className="font-semibold text-green-700">{shortEstimate} days</div>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-xs text-gray-600">Longest</div>
+                              <div className="font-semibold text-red-700">{longEstimate} days</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
           
           {/* Flow Diagram */}
@@ -375,6 +504,7 @@ export default function App() {
                           isExpanded={expandedTaskId === task.id}
                           onToggleExpanded={toggleExpanded}
                           onUpdateDescription={updateDescription}
+                          onToggleArrow={toggleArrow}
                         />
                       ))}
                     </div>
