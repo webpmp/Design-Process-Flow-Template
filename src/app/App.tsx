@@ -21,6 +21,8 @@ const initialTasks: Task[] = [
   { id: '4', name: 'Contextual Inquiry', shortEstimate: 2, longEstimate: 5, phase: 'Discovery', visible: true, description: 'Observe users in their natural environment to understand workflow and context of use.' },
   { id: '5', name: 'Market Research', shortEstimate: 3, longEstimate: 6, phase: 'Discovery', visible: true, description: 'Analyze market trends, user demographics, and industry standards to inform design decisions.' },
   { id: '6', name: 'Analytics Review', shortEstimate: 1, longEstimate: 3, phase: 'Discovery', visible: true, description: 'Review existing analytics data to identify usage patterns, drop-off points, and areas for improvement.' },
+  { id: '27', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Discovery', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.' },
+  { id: '28', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Discovery', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.' },
   
   // Define Phase
   { id: '7', name: 'Synthesize User Research', shortEstimate: 2, longEstimate: 4, phase: 'Define', visible: true, description: 'Analyze data from discovery phase (interviews, observations) to find patterns and insights.' },
@@ -29,6 +31,8 @@ const initialTasks: Task[] = [
   { id: '10', name: 'Formulate Problem Statements', shortEstimate: 1, longEstimate: 3, phase: 'Define', visible: true, description: 'Define clear, actionable problem statements that frame the design challenge.' },
   { id: '11', name: 'Define Objectives & Scope', shortEstimate: 1, longEstimate: 2, phase: 'Define', visible: true, description: 'Establish project goals, success criteria, and boundaries for the design effort.' },
   { id: '12', name: 'Conduct Task Analysis', shortEstimate: 2, longEstimate: 4, phase: 'Define', visible: true, description: 'Break down user tasks into detailed steps to understand complexity and requirements.' },
+  { id: '29', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Define', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.' },
+  { id: '30', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Define', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.' },
   
   // Concept Phase
   { id: '13', name: 'User Stories', shortEstimate: 2, longEstimate: 4, phase: 'Concept', visible: true, description: 'Write user stories in the format "As a [user], I want to [action] so that [benefit]".' },
@@ -37,17 +41,24 @@ const initialTasks: Task[] = [
   { id: '16', name: 'Story Mapping & Task Flows', shortEstimate: 2, longEstimate: 4, phase: 'Concept', visible: true, description: 'Create visual representations of user flows showing how users move through tasks.' },
   { id: '17', name: 'Low-Fidelity Wireframing', shortEstimate: 3, longEstimate: 6, phase: 'Concept', visible: true, description: 'Develop basic wireframes to explore layout and information architecture concepts.' },
   { id: '18', name: 'Paper Prototyping', shortEstimate: 2, longEstimate: 4, phase: 'Concept', visible: true, description: 'Create quick, low-cost prototypes on paper to test concepts with users early.' },
+  { id: '31', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Concept', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.' },
+  { id: '32', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Concept', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.' },
   
   // Design Phase
   { id: '19', name: 'Wireframing', shortEstimate: 3, longEstimate: 7, phase: 'Design', visible: true, description: 'Create detailed wireframes that define layout, content hierarchy, and interactions.' },
   { id: '20', name: 'UI/Visual Design', shortEstimate: 5, longEstimate: 10, phase: 'Design', visible: true, description: 'Apply visual design including typography, color, imagery, and branding elements.' },
   { id: '21', name: 'Interactive Prototyping', shortEstimate: 3, longEstimate: 6, phase: 'Design', visible: true, description: 'Build clickable prototypes that simulate the user experience for testing and validation.' },
+  { id: '26', name: 'Motion Design', shortEstimate: 2, longEstimate: 5, phase: 'Design', visible: true, description: 'Design and create animations, transitions, and micro-interactions to enhance user experience and guide attention.' },
   { id: '22', name: 'UX Writing', shortEstimate: 2, longEstimate: 4, phase: 'Design', visible: true, description: 'Craft clear, concise microcopy for UI elements, error messages, and help text.' },
+  { id: '33', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Design', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.' },
+  { id: '34', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Design', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.' },
   
   // Deliver Phase
   { id: '23', name: 'Design Documentation', shortEstimate: 2, longEstimate: 5, phase: 'Deliver', visible: true, description: 'Create comprehensive documentation including design specifications and guidelines.' },
   { id: '24', name: 'Developer Handoff/Review', shortEstimate: 2, longEstimate: 4, phase: 'Deliver', visible: true, description: 'Collaborate with developers to ensure accurate implementation of designs.' },
   { id: '25', name: 'QA', shortEstimate: 3, longEstimate: 6, phase: 'Deliver', visible: true, description: 'Test the implemented design to verify it meets requirements and quality standards.' },
+  { id: '35', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Deliver', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.' },
+  { id: '36', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Deliver', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.' },
 ];
 
 const phaseColors = {
@@ -265,6 +276,7 @@ export default function App() {
 
   const getTotalShort = () => tasks.filter(t => t.visible).reduce((sum, task) => sum + task.shortEstimate, 0);
   const getTotalLong = () => tasks.filter(t => t.visible).reduce((sum, task) => sum + task.longEstimate, 0);
+  const getAverageEstimate = () => Math.round((getTotalShort() + getTotalLong()) / 2);
 
   const formatDuration = (days: number) => {
     const weeks = (days / 5).toFixed(1);
@@ -278,6 +290,60 @@ export default function App() {
         <div className="max-w-[1600px] mx-auto">
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-3xl">Design Process Flow</h1>
+          </div>
+          
+          {/* Project Duration Estimates */}
+          <div className="mb-8 bg-white border-2 border-gray-800 p-6">
+            <h2 className="text-xl mb-4">Project Duration Estimates</h2>
+            
+            <div className="grid grid-cols-3 gap-4">
+              <div className="flex items-center justify-between p-4 bg-green-50 border-2 border-green-600 rounded">
+                <div>
+                  <div className="text-xs text-gray-600 mb-1">Best Case Scenario</div>
+                  <div className="text-2xl font-semibold text-green-700">{getTotalShort()} days</div>
+                  <div className="text-xs text-green-600 mt-1">
+                    {formatDuration(getTotalShort()).weeks} weeks • {formatDuration(getTotalShort()).months} months
+                  </div>
+                </div>
+                <div className="text-green-600">
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between p-4 bg-blue-50 border-2 border-blue-600 rounded">
+                <div>
+                  <div className="text-xs text-gray-600 mb-1">Average Estimate</div>
+                  <div className="text-2xl font-semibold text-blue-700">
+                    {getAverageEstimate()} days
+                  </div>
+                  <div className="text-xs text-blue-600 mt-1">
+                    {formatDuration(getAverageEstimate()).weeks} weeks • {formatDuration(getAverageEstimate()).months} months
+                  </div>
+                </div>
+                <div className="text-blue-600">
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+              </div>
+              
+              <div className="flex items-center justify-between p-4 bg-red-50 border-2 border-red-600 rounded">
+                <div>
+                  <div className="text-xs text-gray-600 mb-1">Worst Case Scenario</div>
+                  <div className="text-2xl font-semibold text-red-700">{getTotalLong()} days</div>
+                  <div className="text-xs text-red-600 mt-1">
+                    {formatDuration(getTotalLong()).weeks} weeks • {formatDuration(getTotalLong()).months} months
+                  </div>
+                </div>
+                <div className="text-red-600">
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6" />
+                  </svg>
+                </div>
+              </div>
+            </div>
           </div>
           
           {/* Flow Diagram */}
@@ -324,68 +390,6 @@ export default function App() {
                   </div>
                 );
               })}
-            </div>
-          </div>
-          
-          {/* Totals Summary */}
-          <div className="mt-12 bg-white border-2 border-gray-800 p-8 max-w-2xl">
-            <h2 className="text-2xl mb-6">Project Duration Estimates</h2>
-            
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-green-50 border-2 border-green-600 rounded">
-                <div>
-                  <div className="text-sm text-gray-600 mb-1">Best Case Scenario (Shortest Estimates)</div>
-                  <div className="text-3xl font-semibold text-green-700">{getTotalShort()} days</div>
-                  <div className="text-sm text-green-600 mt-1">
-                    {formatDuration(getTotalShort()).weeks} weeks • {formatDuration(getTotalShort()).months} months
-                  </div>
-                </div>
-                <div className="text-green-600">
-                  <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                  </svg>
-                </div>
-              </div>
-              
-              <div className="flex items-center justify-between p-4 bg-red-50 border-2 border-red-600 rounded">
-                <div>
-                  <div className="text-sm text-gray-600 mb-1">Worst Case Scenario (Longest Estimates)</div>
-                  <div className="text-3xl font-semibold text-red-700">{getTotalLong()} days</div>
-                  <div className="text-sm text-red-600 mt-1">
-                    {formatDuration(getTotalLong()).weeks} weeks • {formatDuration(getTotalLong()).months} months
-                  </div>
-                </div>
-                <div className="text-red-600">
-                  <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6" />
-                  </svg>
-                </div>
-              </div>
-              
-              <div className="flex items-center justify-between p-4 bg-blue-50 border-2 border-blue-600 rounded">
-                <div>
-                  <div className="text-sm text-gray-600 mb-1">Estimated Range</div>
-                  <div className="text-3xl font-semibold text-blue-700">
-                    {getTotalShort()} - {getTotalLong()} days
-                  </div>
-                  <div className="text-sm text-blue-600 mt-1">
-                    {formatDuration(getTotalShort()).weeks} - {formatDuration(getTotalLong()).weeks} weeks • {formatDuration(getTotalShort()).months} - {formatDuration(getTotalLong()).months} months
-                  </div>
-                </div>
-                <div className="text-blue-600">
-                  <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-            
-            <div className="mt-6 pt-6 border-t border-gray-300">
-              <p className="text-sm text-gray-600">
-                <strong>Note:</strong> These estimates represent the total time across all phases of the design process. 
-                Actual duration may vary based on project complexity, team size, and stakeholder availability.
-                Week calculations assume 5 working days per week. Month calculations assume 20 working days per month.
-              </p>
             </div>
           </div>
           
