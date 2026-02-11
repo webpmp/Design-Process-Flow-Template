@@ -2,7 +2,7 @@
 
 ![Design Process Flow Diagram](https://github.com/webpmp/webpmp.github.io/blob/master/design-process-flow-v2.png)
 
-This repository contains a structured Design Process Flow Diagram built to help UX and Design Program Managers plan and estimate project timelines. The diagram outlines a comprehensive list of design and program management tasks, each with short and long duration estimates (in days).
+This repository contains a structured Design Process Flow Diagram built to help UX teams plan and estimate project timelines. The diagram outlines a comprehensive list of design tasks, each with best (shortest) and worst case (longest) duration estimates (in days).
 
 ## Key Features
 
