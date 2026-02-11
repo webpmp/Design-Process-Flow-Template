@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { Eye, EyeOff, GripVertical } from 'lucide-react';
+import { Eye, EyeOff, GripVertical, Plus, X, Edit2 } from 'lucide-react';
 
 interface Task {
   id: string;
@@ -12,6 +12,17 @@ interface Task {
   visible: boolean;
   description: string;
   hasArrowAfter: boolean;
+}
+
+interface Phase {
+  id: string;
+  name: string;
+  visible: boolean;
+  color: {
+    bg: string;
+    border: string;
+    header: string;
+  };
 }
 
 const initialTasks: Task[] = [
@@ -62,18 +73,31 @@ const initialTasks: Task[] = [
   { id: '36', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Deliver', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.', hasArrowAfter: true },
 ];
 
-const phaseColors = {
-  Discovery: { bg: 'bg-purple-100', border: 'border-purple-300', header: 'bg-purple-600' },
-  Define: { bg: 'bg-blue-100', border: 'border-blue-300', header: 'bg-blue-600' },
-  Concept: { bg: 'bg-green-100', border: 'border-green-300', header: 'bg-green-600' },
-  Design: { bg: 'bg-orange-100', border: 'border-orange-300', header: 'bg-orange-600' },
-  Deliver: { bg: 'bg-pink-100', border: 'border-pink-300', header: 'bg-pink-600' },
-};
+const colorOptions = [
+  { bg: 'bg-purple-100', border: 'border-purple-300', header: 'bg-purple-600', name: 'Purple' },
+  { bg: 'bg-blue-100', border: 'border-blue-300', header: 'bg-blue-600', name: 'Blue' },
+  { bg: 'bg-green-100', border: 'border-green-300', header: 'bg-green-600', name: 'Green' },
+  { bg: 'bg-orange-100', border: 'border-orange-300', header: 'bg-orange-600', name: 'Orange' },
+  { bg: 'bg-pink-100', border: 'border-pink-300', header: 'bg-pink-600', name: 'Pink' },
+  { bg: 'bg-red-100', border: 'border-red-300', header: 'bg-red-600', name: 'Red' },
+  { bg: 'bg-yellow-100', border: 'border-yellow-300', header: 'bg-yellow-600', name: 'Yellow' },
+  { bg: 'bg-teal-100', border: 'border-teal-300', header: 'bg-teal-600', name: 'Teal' },
+  { bg: 'bg-indigo-100', border: 'border-indigo-300', header: 'bg-indigo-600', name: 'Indigo' },
+];
+
+const initialPhases: Phase[] = [
+  { id: 'Discovery', name: 'Discovery', visible: true, color: colorOptions[0] },
+  { id: 'Define', name: 'Define', visible: true, color: colorOptions[1] },
+  { id: 'Concept', name: 'Concept', visible: true, color: colorOptions[2] },
+  { id: 'Design', name: 'Design', visible: true, color: colorOptions[3] },
+  { id: 'Deliver', name: 'Deliver', visible: true, color: colorOptions[4] },
+];
 
 interface TaskCardProps {
   task: Task;
   index: number;
   phase: string;
+  phaseColor: { bg: string; border: string; header: string };
   updateEstimate: (id: string, type: 'short' | 'long', value: string) => void;
   toggleVisibility: (id: string) => void;
   moveTask: (dragIndex: number, hoverIndex: number, phase: string) => void;
@@ -87,7 +111,8 @@ interface TaskCardProps {
 const TaskCard = ({ 
   task, 
   index, 
-  phase, 
+  phase,
+  phaseColor,
   updateEstimate, 
   toggleVisibility, 
   moveTask, 
@@ -118,8 +143,6 @@ const TaskCard = ({
       isOver: monitor.isOver(),
     }),
   });
-
-  const phaseColor = phaseColors[phase as keyof typeof phaseColors];
   
   return (
     <div ref={drop}>
@@ -239,12 +262,190 @@ const TaskCard = ({
   );
 };
 
+interface PhaseColumnProps {
+  phase: Phase;
+  index: number;
+  phaseTasks: Task[];
+  isLastPhase: boolean;
+  updateEstimate: (id: string, type: 'short' | 'long', value: string) => void;
+  toggleVisibility: (id: string) => void;
+  moveTask: (dragIndex: number, hoverIndex: number, phase: string) => void;
+  expandedTaskId: string | null;
+  toggleExpanded: (id: string) => void;
+  updateDescription: (id: string, description: string) => void;
+  toggleArrow: (id: string) => void;
+  addTask: (phase: string) => void;
+  movePhase: (dragIndex: number, hoverIndex: number) => void;
+  renamePhase: (id: string, newName: string) => void;
+  togglePhaseVisibility: (id: string) => void;
+  removePhase: (id: string) => void;
+}
+
+const PhaseColumn = ({
+  phase,
+  index,
+  phaseTasks,
+  isLastPhase,
+  updateEstimate,
+  toggleVisibility,
+  moveTask,
+  expandedTaskId,
+  toggleExpanded,
+  updateDescription,
+  toggleArrow,
+  addTask,
+  movePhase,
+  renamePhase,
+  togglePhaseVisibility,
+  removePhase,
+}: PhaseColumnProps) => {
+  const [isEditingName, setIsEditingName] = useState(false);
+  const [editedName, setEditedName] = useState(phase.name);
+
+  const [{ isDragging }, drag] = useDrag({
+    type: 'PHASE',
+    item: { index },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  });
+
+  const [{ isOver }, drop] = useDrop({
+    accept: 'PHASE',
+    hover: (item: { index: number }) => {
+      if (item.index === index) return;
+      
+      movePhase(item.index, index);
+      item.index = index;
+    },
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  });
+
+  const handleNameSave = () => {
+    if (editedName.trim()) {
+      renamePhase(phase.id, editedName.trim());
+    }
+    setIsEditingName(false);
+  };
+
+  const handleNameKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleNameSave();
+    } else if (e.key === 'Escape') {
+      setEditedName(phase.name);
+      setIsEditingName(false);
+    }
+  };
+
+  return (
+    <div 
+      ref={(node) => drag(drop(node))}
+      className={`flex flex-col border-r border-gray-300 last:border-r-0 relative ${isDragging ? 'opacity-50' : ''} ${isOver ? 'bg-blue-50' : ''}`}
+    >
+      {/* Phase Header */}
+      <div className={`${phase.color.header} text-white px-6 py-4 text-center font-semibold min-w-[280px] relative group`}>
+        <div className="flex items-center justify-center gap-2">
+          <button
+            ref={drag}
+            className="cursor-move p-1 hover:bg-white/20 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+            title="Drag to reorder phase"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <GripVertical className="w-4 h-4" />
+          </button>
+          
+          {isEditingName ? (
+            <input
+              type="text"
+              value={editedName}
+              onChange={(e) => setEditedName(e.target.value)}
+              onBlur={handleNameSave}
+              onKeyDown={handleNameKeyDown}
+              className="bg-white text-gray-900 px-2 py-1 rounded text-center font-semibold focus:outline-none focus:ring-2 focus:ring-white/50"
+              autoFocus
+              onClick={(e) => e.stopPropagation()}
+            />
+          ) : (
+            <span onClick={() => setIsEditingName(true)} className="cursor-pointer">
+              {phase.name}
+            </span>
+          )}
+          
+          <button
+            onClick={() => setIsEditingName(true)}
+            className="p-1 hover:bg-white/20 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+            title="Rename phase"
+          >
+            <Edit2 className="w-4 h-4" />
+          </button>
+        </div>
+        
+        {/* Phase controls */}
+        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button
+            onClick={() => togglePhaseVisibility(phase.id)}
+            className="p-1 hover:bg-white/20 rounded"
+            title={phase.visible ? 'Hide phase' : 'Show phase'}
+          >
+            {phase.visible ? (
+              <Eye className="w-4 h-4" />
+            ) : (
+              <EyeOff className="w-4 h-4" />
+            )}
+          </button>
+          <button
+            onClick={() => removePhase(phase.id)}
+            className="p-1 hover:bg-white/20 rounded"
+            title="Remove phase"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+      
+      {/* Tasks */}
+      {phase.visible && (
+        <div className="flex-1 p-6 pl-14 space-y-4">
+          {phaseTasks.map((task, taskIndex) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              index={taskIndex}
+              phase={phase.id}
+              phaseColor={phase.color}
+              updateEstimate={updateEstimate}
+              toggleVisibility={toggleVisibility}
+              moveTask={moveTask}
+              isLastInPhase={taskIndex === phaseTasks.length - 1}
+              isExpanded={expandedTaskId === task.id}
+              onToggleExpanded={toggleExpanded}
+              onUpdateDescription={updateDescription}
+              onToggleArrow={toggleArrow}
+            />
+          ))}
+          
+          {/* Add Task Button */}
+          <button
+            onClick={() => addTask(phase.id)}
+            className="w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-gray-300 rounded hover:border-gray-400 hover:bg-gray-50 transition-colors text-gray-600 hover:text-gray-800"
+            title="Add new task"
+          >
+            <Plus className="w-5 h-5" />
+            <span className="text-sm font-medium">Add Task</span>
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
 export default function App() {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const [phases, setPhases] = useState<Phase[]>(initialPhases);
   const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
   const [showPhaseBreakdown, setShowPhaseBreakdown] = useState(false);
-
-  const phases = ['Discovery', 'Define', 'Concept', 'Design', 'Deliver'];
 
   const updateEstimate = (id: string, type: 'short' | 'long', value: string) => {
     const numValue = parseInt(value) || 0;
@@ -277,51 +478,117 @@ export default function App() {
     ));
   };
 
-  const moveTask = (dragIndex: number, hoverIndex: number, phase: string) => {
-    const phaseTasks = tasks.filter(task => task.phase === phase);
-    const otherTasks = tasks.filter(task => task.phase !== phase);
+  const addTask = (phaseId: string) => {
+    const newId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    
+    const newTask: Task = {
+      id: newId,
+      name: 'New Task',
+      shortEstimate: 1,
+      longEstimate: 3,
+      phase: phaseId,
+      visible: true,
+      description: '',
+      hasArrowAfter: true,
+    };
+    
+    const phaseTasks = tasks.filter(t => t.phase === phaseId);
+    const otherTasks = tasks.filter(t => t.phase !== phaseId);
+    
+    const newTasks: Task[] = [];
+    phases.forEach(p => {
+      if (p.id === phaseId) {
+        newTasks.push(...phaseTasks, newTask);
+      } else {
+        newTasks.push(...otherTasks.filter(t => t.phase === p.id));
+      }
+    });
+    
+    setTasks(newTasks);
+    setExpandedTaskId(newId);
+  };
+
+  const moveTask = (dragIndex: number, hoverIndex: number, phaseId: string) => {
+    const phaseTasks = tasks.filter(task => task.phase === phaseId);
+    const otherTasks = tasks.filter(task => task.phase !== phaseId);
     
     const dragTask = phaseTasks[dragIndex];
     const newPhaseTasks = [...phaseTasks];
     newPhaseTasks.splice(dragIndex, 1);
     newPhaseTasks.splice(hoverIndex, 0, dragTask);
     
-    // Reconstruct the full tasks array maintaining the order of phases
     const newTasks: Task[] = [];
     phases.forEach(p => {
-      if (p === phase) {
+      if (p.id === phaseId) {
         newTasks.push(...newPhaseTasks);
       } else {
-        newTasks.push(...otherTasks.filter(t => t.phase === p));
+        newTasks.push(...otherTasks.filter(t => t.phase === p.id));
       }
     });
     
     setTasks(newTasks);
   };
 
+  const movePhase = (dragIndex: number, hoverIndex: number) => {
+    const newPhases = [...phases];
+    const dragPhase = newPhases[dragIndex];
+    newPhases.splice(dragIndex, 1);
+    newPhases.splice(hoverIndex, 0, dragPhase);
+    setPhases(newPhases);
+  };
+
+  const renamePhase = (id: string, newName: string) => {
+    setPhases(phases.map(p => p.id === id ? { ...p, name: newName } : p));
+  };
+
+  const togglePhaseVisibility = (id: string) => {
+    setPhases(phases.map(p => p.id === id ? { ...p, visible: !p.visible } : p));
+  };
+
+  const removePhase = (id: string) => {
+    if (phases.length <= 1) {
+      alert('You must have at least one phase.');
+      return;
+    }
+    
+    const confirmRemove = window.confirm('Are you sure you want to remove this phase? All tasks in this phase will also be removed.');
+    if (!confirmRemove) return;
+    
+    setPhases(phases.filter(p => p.id !== id));
+    setTasks(tasks.filter(t => t.phase !== id));
+  };
+
+  const addPhase = () => {
+    const newId = `phase-${Date.now()}`;
+    const colorIndex = phases.length % colorOptions.length;
+    const newPhase: Phase = {
+      id: newId,
+      name: 'New Phase',
+      visible: true,
+      color: colorOptions[colorIndex],
+    };
+    setPhases([...phases, newPhase]);
+  };
+
   // Calculate total with concurrent task support
   const calculateTotalWithConcurrency = (type: 'short' | 'long') => {
     let total = 0;
     
-    // Process all visible tasks
     const visibleTasks = tasks.filter(t => t.visible);
+    const visiblePhases = phases.filter(p => p.visible);
     
-    // Group tasks by phase first
-    phases.forEach(phase => {
-      const phaseTasks = visibleTasks.filter(t => t.phase === phase);
+    visiblePhases.forEach(phase => {
+      const phaseTasks = visibleTasks.filter(t => t.phase === phase.id);
       
-      // Within each phase, identify concurrent groups
       let i = 0;
       while (i < phaseTasks.length) {
         const concurrentGroup = [phaseTasks[i]];
         
-        // Find all consecutive tasks without arrows (concurrent tasks)
         while (i < phaseTasks.length - 1 && !phaseTasks[i].hasArrowAfter) {
           i++;
           concurrentGroup.push(phaseTasks[i]);
         }
         
-        // For concurrent group, take the max estimate
         const groupEstimate = Math.max(
           ...concurrentGroup.map(t => type === 'short' ? t.shortEstimate : t.longEstimate)
         );
@@ -338,22 +605,19 @@ export default function App() {
   const getTotalLong = () => calculateTotalWithConcurrency('long');
   const getAverageEstimate = () => Math.round((getTotalShort() + getTotalLong()) / 2);
 
-  // Calculate duration for a specific phase
-  const getPhaseEstimate = (phase: string, type: 'short' | 'long') => {
-    const visibleTasks = tasks.filter(t => t.visible && t.phase === phase);
+  const getPhaseEstimate = (phaseId: string, type: 'short' | 'long') => {
+    const visibleTasks = tasks.filter(t => t.visible && t.phase === phaseId);
     let total = 0;
     
     let i = 0;
     while (i < visibleTasks.length) {
       const concurrentGroup = [visibleTasks[i]];
       
-      // Find all consecutive tasks without arrows (concurrent tasks)
       while (i < visibleTasks.length - 1 && !visibleTasks[i].hasArrowAfter) {
         i++;
         concurrentGroup.push(visibleTasks[i]);
       }
       
-      // For concurrent group, take the max estimate
       const groupEstimate = Math.max(
         ...concurrentGroup.map(t => type === 'short' ? t.shortEstimate : t.longEstimate)
       );
@@ -375,8 +639,13 @@ export default function App() {
     <DndProvider backend={HTML5Backend}>
       <div className="min-h-screen bg-gray-50 p-8">
         <div className="max-w-[1600px] mx-auto">
-          <div className="flex items-center justify-between mb-8">
+          <div className="mb-2">
             <h1 className="text-3xl">Design Process Flow</h1>
+          </div>
+          
+          {/* Purpose Description */}
+          <div className="mb-8 text-sm text-gray-600 max-w-[50%]">
+            <p>This interactive flow diagram helps visualize and estimate time for completing design tasks across multiple phases. Use it to plan project timelines, track concurrent work streams, and communicate estimated durations with your team and stakeholders.</p>
           </div>
           
           {/* Project Duration Estimates */}
@@ -391,7 +660,8 @@ export default function App() {
               </button>
             </div>
             
-            <div className="grid grid-cols-3 gap-4"> {/* Best Case */}
+            <div className="grid grid-cols-3 gap-4">
+              {/* Best Case */}
               <div className="flex items-center justify-between p-4 bg-green-50 border-2 border-green-600 rounded">
                 <div>
                   <div className="text-xs text-gray-600 mb-1">Best Case Scenario</div>
@@ -447,15 +717,14 @@ export default function App() {
               <div className="mt-6 pt-6 border-t border-gray-300">
                 <h3 className="text-lg font-semibold mb-4">Phase Duration Breakdown</h3>
                 <div className="space-y-3">
-                  {phases.map(phase => {
-                    const phaseColor = phaseColors[phase as keyof typeof phaseColors];
-                    const shortEstimate = getPhaseEstimate(phase, 'short');
-                    const longEstimate = getPhaseEstimate(phase, 'long');
+                  {phases.filter(p => p.visible).map(phase => {
+                    const shortEstimate = getPhaseEstimate(phase.id, 'short');
+                    const longEstimate = getPhaseEstimate(phase.id, 'long');
                     
                     return (
-                      <div key={phase} className={`p-4 ${phaseColor.bg} border ${phaseColor.border} rounded`}>
+                      <div key={phase.id} className={`p-4 ${phase.color.bg} border ${phase.color.border} rounded`}>
                         <div className="flex items-center justify-between">
-                          <div className="font-semibold text-gray-900">{phase}</div>
+                          <div className="font-semibold text-gray-900">{phase.name}</div>
                           <div className="flex gap-6 text-sm">
                             <div className="text-right">
                               <div className="text-xs text-gray-600">Shortest</div>
@@ -475,56 +744,8 @@ export default function App() {
             )}
           </div>
           
-          {/* Flow Diagram */}
-          <div className="overflow-x-auto pb-8">
-            <div className="inline-flex gap-0 border border-gray-300 bg-white">
-              {phases.map((phase, phaseIndex) => {
-                const phaseTasks = tasks.filter(task => task.phase === phase);
-                const phaseColor = phaseColors[phase as keyof typeof phaseColors];
-                
-                return (
-                  <div key={phase} className="flex flex-col border-r border-gray-300 last:border-r-0">
-                    {/* Phase Header */}
-                    <div className={`${phaseColor.header} text-white px-6 py-4 text-center font-semibold min-w-[280px]`}>
-                      {phase}
-                    </div>
-                    
-                    {/* Tasks */}
-                    <div className="flex-1 p-6 pl-14 space-y-4">
-                      {phaseTasks.map((task, taskIndex) => (
-                        <TaskCard
-                          key={task.id}
-                          task={task}
-                          index={taskIndex}
-                          phase={phase}
-                          updateEstimate={updateEstimate}
-                          toggleVisibility={toggleVisibility}
-                          moveTask={moveTask}
-                          isLastInPhase={taskIndex === phaseTasks.length - 1}
-                          isExpanded={expandedTaskId === task.id}
-                          onToggleExpanded={toggleExpanded}
-                          onUpdateDescription={updateDescription}
-                          onToggleArrow={toggleArrow}
-                        />
-                      ))}
-                    </div>
-                    
-                    {/* Arrow to next phase */}
-                    {phaseIndex < phases.length - 1 && (
-                      <div className="absolute top-1/2 -translate-y-1/2 right-0 translate-x-[1px] z-10">
-                        <div className="flex items-center">
-                          <div className="w-0 h-0 border-t-[12px] border-t-transparent border-b-[12px] border-b-transparent border-l-[16px] border-l-gray-800"></div>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          
           {/* Legend */}
-          <div className="mt-6 flex flex-wrap gap-6 text-sm text-gray-600">
+          <div className="mb-6 flex flex-wrap gap-6 text-sm text-gray-600">
             <div className="flex items-center gap-2">
               <div className="w-8 h-6 bg-green-50 border border-gray-300 rounded"></div>
               <span>Shortest estimate (days)</span>
@@ -541,9 +762,48 @@ export default function App() {
               <Eye className="w-4 h-4 text-gray-600" />
               <span>Toggle visibility</span>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-6 bg-gray-100 border border-gray-300 rounded"></div>
-              <span>Excluded from totals</span>
+          </div>
+          
+          {/* Flow Diagram */}
+          <div className="overflow-x-auto pb-8">
+            <div className="inline-flex gap-0 border border-gray-300 bg-white">
+              {phases.map((phase, phaseIndex) => {
+                const phaseTasks = tasks.filter(task => task.phase === phase.id);
+                
+                return (
+                  <PhaseColumn
+                    key={phase.id}
+                    phase={phase}
+                    index={phaseIndex}
+                    phaseTasks={phaseTasks}
+                    isLastPhase={phaseIndex === phases.length - 1}
+                    updateEstimate={updateEstimate}
+                    toggleVisibility={toggleVisibility}
+                    moveTask={moveTask}
+                    expandedTaskId={expandedTaskId}
+                    toggleExpanded={toggleExpanded}
+                    updateDescription={updateDescription}
+                    toggleArrow={toggleArrow}
+                    addTask={addTask}
+                    movePhase={movePhase}
+                    renamePhase={renamePhase}
+                    togglePhaseVisibility={togglePhaseVisibility}
+                    removePhase={removePhase}
+                  />
+                );
+              })}
+              
+              {/* Add Phase Button */}
+              <div className="flex flex-col items-center justify-center min-w-[100px] p-6 border-l border-gray-300">
+                <button
+                  onClick={addPhase}
+                  className="flex flex-col items-center justify-center gap-2 p-4 border-2 border-dashed border-gray-300 rounded hover:border-gray-400 hover:bg-gray-50 transition-colors text-gray-600 hover:text-gray-800"
+                  title="Add new phase"
+                >
+                  <Plus className="w-6 h-6" />
+                  <span className="text-xs font-medium text-center">Add Phase</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
