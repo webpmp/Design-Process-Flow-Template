@@ -18,6 +18,7 @@ interface Phase {
   id: string;
   name: string;
   visible: boolean;
+  description?: string;
   color: {
     bg: string;
     border: string;
@@ -86,11 +87,41 @@ const colorOptions = [
 ];
 
 const initialPhases: Phase[] = [
-  { id: 'Discovery', name: 'Discovery', visible: true, color: colorOptions[0] },
-  { id: 'Define', name: 'Define', visible: true, color: colorOptions[1] },
-  { id: 'Concept', name: 'Concept', visible: true, color: colorOptions[2] },
-  { id: 'Design', name: 'Design', visible: true, color: colorOptions[3] },
-  { id: 'Deliver', name: 'Deliver', visible: true, color: colorOptions[4] },
+  {
+    id: 'Discovery',
+    name: 'Discovery',
+    visible: true,
+    color: colorOptions[0],
+    description: 'Identify the problem space through user research, stakeholder input, and existing data. Focus on understanding behaviors, needs, and constraints rather than jumping to solutions. Outputs frame what matters and why.'
+  },
+  {
+    id: 'Define',
+    name: 'Define',
+    visible: true,
+    color: colorOptions[1],
+    description: 'Synthesize research into clear problem statements, user needs, and success criteria. Establish priorities, align stakeholders, and set direction. This phase turns ambiguity into a focused design target.'
+  },
+  {
+    id: 'Concept',
+    name: 'Concept',
+    visible: true,
+    color: colorOptions[2],
+    description: 'Explore multiple solution directions quickly through sketches, flows, and low-fidelity prototypes. Test early ideas to validate assumptions and eliminate weak directions. Emphasis is on breadth before depth.'
+  },
+  {
+    id: 'Design',
+    name: 'Design',
+    visible: true,
+    color: colorOptions[3],
+    description: 'Develop the chosen concept into detailed, high-fidelity experiences. Refine interactions, visual systems, and content with iterative testing and feedback. Ensure usability, accessibility, and consistency across the product.'
+  },
+  {
+    id: 'Deliver',
+    name: 'Deliver',
+    visible: true,
+    color: colorOptions[4],
+    description: 'Prepare final design artifacts, specifications, and documentation for handoff. Support teams with clarifications, QA, and validation to ensure the experience is built as intended. Measure outcomes against the original goals.'
+  },
 ];
 
 interface TaskCardProps {
@@ -446,6 +477,9 @@ export default function App() {
   const [phases, setPhases] = useState<Phase[]>(initialPhases);
   const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
   const [showPhaseBreakdown, setShowPhaseBreakdown] = useState(false);
+  const [editingPhaseName, setEditingPhaseName] = useState<string | null>(null);
+  const [editingPhaseDesc, setEditingPhaseDesc] = useState<string | null>(null);
+  const [showHowToUse, setShowHowToUse] = useState(false);
 
   const updateEstimate = (id: string, type: 'short' | 'long', value: string) => {
     const numValue = parseInt(value) || 0;
@@ -539,6 +573,10 @@ export default function App() {
 
   const renamePhase = (id: string, newName: string) => {
     setPhases(phases.map(p => p.id === id ? { ...p, name: newName } : p));
+  };
+
+  const updatePhaseDescription = (id: string, description: string) => {
+    setPhases(phases.map(p => p.id === id ? { ...p, description } : p));
   };
 
   const togglePhaseVisibility = (id: string) => {
@@ -639,8 +677,14 @@ export default function App() {
     <DndProvider backend={HTML5Backend}>
       <div className="min-h-screen bg-gray-50 p-8">
         <div className="max-w-[1600px] mx-auto">
-          <div className="mb-2">
+          <div className="mb-2 flex items-center justify-between">
             <h1 className="text-3xl">Design Process Flow</h1>
+            <button
+              onClick={() => setShowHowToUse(true)}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm font-medium"
+            >
+              How to Use
+            </button>
           </div>
           
           {/* Purpose Description */}
@@ -659,7 +703,7 @@ export default function App() {
                 {showPhaseBreakdown ? 'Hide Phase Breakdown' : 'View Phase Breakdown'}
               </button>
             </div>
-            
+
             <div className="grid grid-cols-3 gap-4">
               {/* Best Case */}
               <div className="flex items-center justify-between p-4 bg-green-50 border-2 border-green-600 rounded">
@@ -676,7 +720,7 @@ export default function App() {
                   </svg>
                 </div>
               </div>
-              
+
               {/* Average */}
               <div className="flex items-center justify-between p-4 bg-blue-50 border-2 border-blue-600 rounded">
                 <div>
@@ -694,7 +738,7 @@ export default function App() {
                   </svg>
                 </div>
               </div>
-              
+
               {/* Worst Case */}
               <div className="flex items-center justify-between p-4 bg-red-50 border-2 border-red-600 rounded">
                 <div>
@@ -712,6 +756,18 @@ export default function App() {
               </div>
             </div>
 
+            {/* Legend Items */}
+            <div className="mt-6 flex gap-8 text-sm text-gray-600">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-6 bg-green-50 border border-gray-300 rounded"></div>
+                <span>Shortest estimate (days)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-6 bg-red-50 border border-gray-300 rounded"></div>
+                <span>Longest estimate (days)</span>
+              </div>
+            </div>
+
             {/* Phase Breakdown */}
             {showPhaseBreakdown && (
               <div className="mt-6 pt-6 border-t border-gray-300">
@@ -720,11 +776,43 @@ export default function App() {
                   {phases.filter(p => p.visible).map(phase => {
                     const shortEstimate = getPhaseEstimate(phase.id, 'short');
                     const longEstimate = getPhaseEstimate(phase.id, 'long');
-                    
+                    const isEditingName = editingPhaseName === phase.id;
+                    const isEditingDesc = editingPhaseDesc === phase.id;
+
                     return (
                       <div key={phase.id} className={`p-4 ${phase.color.bg} border ${phase.color.border} rounded`}>
-                        <div className="flex items-center justify-between">
-                          <div className="font-semibold text-gray-900">{phase.name}</div>
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-2 flex-1">
+                            {isEditingName ? (
+                              <input
+                                type="text"
+                                value={phase.name}
+                                onChange={(e) => renamePhase(phase.id, e.target.value)}
+                                onBlur={() => setEditingPhaseName(null)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') setEditingPhaseName(null);
+                                  if (e.key === 'Escape') setEditingPhaseName(null);
+                                }}
+                                className="px-2 py-1 border border-gray-400 rounded font-semibold text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                autoFocus
+                              />
+                            ) : (
+                              <div
+                                onClick={() => setEditingPhaseName(phase.id)}
+                                className="font-semibold text-gray-900 cursor-pointer hover:bg-white/50 px-2 py-1 rounded"
+                                title="Click to edit phase name"
+                              >
+                                {phase.name}
+                              </div>
+                            )}
+                            <button
+                              onClick={() => setEditingPhaseName(phase.id)}
+                              className="p-1 hover:bg-white/50 rounded"
+                              title="Edit phase name"
+                            >
+                              <Edit2 className="w-3 h-3 text-gray-500" />
+                            </button>
+                          </div>
                           <div className="flex gap-6 text-sm">
                             <div className="text-right">
                               <div className="text-xs text-gray-600">Shortest</div>
@@ -736,6 +824,27 @@ export default function App() {
                             </div>
                           </div>
                         </div>
+                        {isEditingDesc ? (
+                          <div>
+                            <textarea
+                              value={phase.description || ''}
+                              onChange={(e) => updatePhaseDescription(phase.id, e.target.value)}
+                              onBlur={() => setEditingPhaseDesc(null)}
+                              className="w-full min-h-[100px] p-2 text-sm border border-gray-400 rounded resize-y bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              placeholder="Enter phase description..."
+                              autoFocus
+                            />
+                            <div className="mt-2 text-xs text-gray-500">Press Escape or click outside to finish editing</div>
+                          </div>
+                        ) : (
+                          <div
+                            onClick={() => setEditingPhaseDesc(phase.id)}
+                            className="text-sm text-gray-700 leading-relaxed cursor-pointer hover:bg-white/50 p-2 rounded"
+                            title="Click to edit description"
+                          >
+                            {phase.description || 'Click to add description...'}
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -743,27 +852,7 @@ export default function App() {
               </div>
             )}
           </div>
-          
-          {/* Legend */}
-          <div className="mb-6 flex flex-wrap gap-6 text-sm text-gray-600">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-6 bg-green-50 border border-gray-300 rounded"></div>
-              <span>Shortest estimate (days)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-6 bg-red-50 border border-gray-300 rounded"></div>
-              <span>Longest estimate (days)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <GripVertical className="w-4 h-4 text-gray-400" />
-              <span>Drag to reorder</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Eye className="w-4 h-4 text-gray-600" />
-              <span>Toggle visibility</span>
-            </div>
-          </div>
-          
+
           {/* Flow Diagram */}
           <div className="overflow-x-auto pb-8">
             <div className="inline-flex gap-0 border border-gray-300 bg-white">
@@ -806,6 +895,92 @@ export default function App() {
               </div>
             </div>
           </div>
+
+          {/* How to Use Overlay */}
+          {showHowToUse && (
+            <div
+              className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+              onClick={() => setShowHowToUse(false)}
+            >
+              <div
+                className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 p-8"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-semibold">How to Use This Template</h2>
+                  <button
+                    onClick={() => setShowHowToUse(false)}
+                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    title="Close"
+                  >
+                    <X className="w-6 h-6 text-gray-600" />
+                  </button>
+                </div>
+
+                <div className="space-y-4 text-gray-700">
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold">
+                      1
+                    </div>
+                    <div className="flex-1">
+                      <p className="leading-relaxed">
+                        <span className="font-semibold">Toggle tasks on/off</span> to include or exclude them from your estimate, or create and organize new tasks within each phase of your project.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold">
+                      2
+                    </div>
+                    <div className="flex-1">
+                      <p className="leading-relaxed">
+                        <span className="font-semibold">Drag and drop</span> to reorder tasks within phases or rearrange phases themselves to match your workflow.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold">
+                      3
+                    </div>
+                    <div className="flex-1">
+                      <p className="leading-relaxed">
+                        <span className="font-semibold">(Optional) Click on each card</span> to expand it and edit the description. This is helpful when collaborating with a team to estimate work effort.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-semibold">
+                      4
+                    </div>
+                    <div className="flex-1">
+                      <p className="leading-relaxed">
+                        <span className="font-semibold">Estimate shortest and longest</span> number of days to complete each task. These estimates will be used to calculate your project timeline.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-sm font-semibold text-blue-900 mb-2">When you're done:</p>
+                    <p className="text-sm text-blue-800">
+                      View the <span className="font-semibold">Best Case, Worst Case, and Average</span> estimates at the top of the page. These represent the overall project duration based on your task estimates.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-8 flex justify-end">
+                  <button
+                    onClick={() => setShowHowToUse(false)}
+                    className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors font-medium"
+                  >
+                    Got it!
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </DndProvider>
