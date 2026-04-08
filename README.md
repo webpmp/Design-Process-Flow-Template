@@ -1,6 +1,6 @@
-# Design Process Flow Template
+![Design Process Flow Template screenshot](https://github.com/webpmp/webpmp.github.io/blob/master/design-process-flow-v4.png)
 
-![Design Process Flow Template screenshot](https://github.com/webpmp/webpmp.github.io/blob/master/design-process-flow-v2.png)
+# Design Process Flow Template
 
 This repository contains a structured Design Process Flow Template built to help UX teams plan and estimate project timelines. The diagram outlines a comprehensive list of design tasks, each with best (shortest) and worst case (longest) duration estimates (in days).
 
