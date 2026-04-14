@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { Eye, EyeOff, GripVertical, Plus, X, Edit2 } from 'lucide-react';
+import { Eye, EyeOff, GripVertical, Plus, X, Edit2, Link2, ArrowUp, ArrowDown } from 'lucide-react';
 
 interface Task {
   id: string;
@@ -12,6 +12,7 @@ interface Task {
   visible: boolean;
   description: string;
   hasArrowAfter: boolean;
+  blockedBy: string[]; // Array of task IDs this task depends on
 }
 
 interface Phase {
@@ -28,50 +29,50 @@ interface Phase {
 
 const initialTasks: Task[] = [
   // Discovery Phase
-  { id: '1', name: 'Competitive Analysis', shortEstimate: 2, longEstimate: 5, phase: 'Discovery', visible: true, description: 'Evaluate competitor products and services to identify strengths, weaknesses, and market opportunities.', hasArrowAfter: true },
-  { id: '2', name: 'User Interviews', shortEstimate: 3, longEstimate: 7, phase: 'Discovery', visible: true, description: 'Conduct one-on-one interviews with target users to understand their needs, behaviors, and pain points.', hasArrowAfter: true },
-  { id: '3', name: 'Stakeholder Interviews', shortEstimate: 2, longEstimate: 4, phase: 'Discovery', visible: true, description: 'Meet with key stakeholders to align on business goals, constraints, and success metrics.', hasArrowAfter: true },
-  { id: '4', name: 'Contextual Inquiry', shortEstimate: 2, longEstimate: 5, phase: 'Discovery', visible: true, description: 'Observe users in their natural environment to understand workflow and context of use.', hasArrowAfter: true },
-  { id: '5', name: 'Market Research', shortEstimate: 3, longEstimate: 6, phase: 'Discovery', visible: true, description: 'Analyze market trends, user demographics, and industry standards to inform design decisions.', hasArrowAfter: true },
-  { id: '6', name: 'Analytics Review', shortEstimate: 1, longEstimate: 3, phase: 'Discovery', visible: true, description: 'Review existing analytics data to identify usage patterns, drop-off points, and areas for improvement.', hasArrowAfter: true },
-  { id: '27', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Discovery', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.', hasArrowAfter: true },
-  { id: '28', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Discovery', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.', hasArrowAfter: true },
-  
+  { id: '1', name: 'Competitive Analysis', shortEstimate: 2, longEstimate: 5, phase: 'Discovery', visible: true, description: 'Evaluate competitor products and services to identify strengths, weaknesses, and market opportunities.', hasArrowAfter: true, blockedBy: [] },
+  { id: '2', name: 'User Interviews', shortEstimate: 3, longEstimate: 7, phase: 'Discovery', visible: true, description: 'Conduct one-on-one interviews with target users to understand their needs, behaviors, and pain points.', hasArrowAfter: true, blockedBy: [] },
+  { id: '3', name: 'Stakeholder Interviews', shortEstimate: 2, longEstimate: 4, phase: 'Discovery', visible: true, description: 'Meet with key stakeholders to align on business goals, constraints, and success metrics.', hasArrowAfter: true, blockedBy: [] },
+  { id: '4', name: 'Contextual Inquiry', shortEstimate: 2, longEstimate: 5, phase: 'Discovery', visible: true, description: 'Observe users in their natural environment to understand workflow and context of use.', hasArrowAfter: true, blockedBy: [] },
+  { id: '5', name: 'Market Research', shortEstimate: 3, longEstimate: 6, phase: 'Discovery', visible: true, description: 'Analyze market trends, user demographics, and industry standards to inform design decisions.', hasArrowAfter: true, blockedBy: [] },
+  { id: '6', name: 'Analytics Review', shortEstimate: 1, longEstimate: 3, phase: 'Discovery', visible: true, description: 'Review existing analytics data to identify usage patterns, drop-off points, and areas for improvement.', hasArrowAfter: true, blockedBy: [] },
+  { id: '27', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Discovery', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.', hasArrowAfter: true, blockedBy: [] },
+  { id: '28', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Discovery', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.', hasArrowAfter: true, blockedBy: [] },
+
   // Define Phase
-  { id: '7', name: 'Synthesize User Research', shortEstimate: 2, longEstimate: 4, phase: 'Define', visible: true, description: 'Analyze data from discovery phase (interviews, observations) to find patterns and insights.', hasArrowAfter: true },
-  { id: '8', name: 'Create User Personas', shortEstimate: 2, longEstimate: 4, phase: 'Define', visible: true, description: 'Develop fictional characters that represent key user segments with their goals and behaviors.', hasArrowAfter: true },
-  { id: '9', name: 'Map User Journeys', shortEstimate: 2, longEstimate: 5, phase: 'Define', visible: true, description: 'Document the end-to-end experience of users interacting with the product or service.', hasArrowAfter: true },
-  { id: '10', name: 'Formulate Problem Statements', shortEstimate: 1, longEstimate: 3, phase: 'Define', visible: true, description: 'Define clear, actionable problem statements that frame the design challenge.', hasArrowAfter: true },
-  { id: '11', name: 'Define Objectives & Scope', shortEstimate: 1, longEstimate: 2, phase: 'Define', visible: true, description: 'Establish project goals, success criteria, and boundaries for the design effort.', hasArrowAfter: true },
-  { id: '12', name: 'Conduct Task Analysis', shortEstimate: 2, longEstimate: 4, phase: 'Define', visible: true, description: 'Break down user tasks into detailed steps to understand complexity and requirements.', hasArrowAfter: true },
-  { id: '29', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Define', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.', hasArrowAfter: true },
-  { id: '30', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Define', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.', hasArrowAfter: true },
-  
+  { id: '7', name: 'Synthesize User Research', shortEstimate: 2, longEstimate: 4, phase: 'Define', visible: true, description: 'Analyze data from discovery phase (interviews, observations) to find patterns and insights.', hasArrowAfter: true, blockedBy: [] },
+  { id: '8', name: 'Create User Personas', shortEstimate: 2, longEstimate: 4, phase: 'Define', visible: true, description: 'Develop fictional characters that represent key user segments with their goals and behaviors.', hasArrowAfter: true, blockedBy: [] },
+  { id: '9', name: 'Map User Journeys', shortEstimate: 2, longEstimate: 5, phase: 'Define', visible: true, description: 'Document the end-to-end experience of users interacting with the product or service.', hasArrowAfter: true, blockedBy: [] },
+  { id: '10', name: 'Formulate Problem Statements', shortEstimate: 1, longEstimate: 3, phase: 'Define', visible: true, description: 'Define clear, actionable problem statements that frame the design challenge.', hasArrowAfter: true, blockedBy: [] },
+  { id: '11', name: 'Define Objectives & Scope', shortEstimate: 1, longEstimate: 2, phase: 'Define', visible: true, description: 'Establish project goals, success criteria, and boundaries for the design effort.', hasArrowAfter: true, blockedBy: [] },
+  { id: '12', name: 'Conduct Task Analysis', shortEstimate: 2, longEstimate: 4, phase: 'Define', visible: true, description: 'Break down user tasks into detailed steps to understand complexity and requirements.', hasArrowAfter: true, blockedBy: [] },
+  { id: '29', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Define', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.', hasArrowAfter: true, blockedBy: [] },
+  { id: '30', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Define', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.', hasArrowAfter: true, blockedBy: [] },
+
   // Concept Phase
-  { id: '13', name: 'User Stories', shortEstimate: 2, longEstimate: 4, phase: 'Concept', visible: true, description: 'Write user stories in the format "As a [user], I want to [action] so that [benefit]".', hasArrowAfter: true },
-  { id: '14', name: 'Sketching & Brainstorming', shortEstimate: 2, longEstimate: 5, phase: 'Concept', visible: true, description: 'Generate multiple design concepts through rapid sketching and ideation sessions.', hasArrowAfter: true },
-  { id: '15', name: 'Affinity Diagramming', shortEstimate: 1, longEstimate: 3, phase: 'Concept', visible: true, description: 'Organize ideas and insights into related groups to identify themes and priorities.', hasArrowAfter: true },
-  { id: '16', name: 'Story Mapping & Task Flows', shortEstimate: 2, longEstimate: 4, phase: 'Concept', visible: true, description: 'Create visual representations of user flows showing how users move through tasks.', hasArrowAfter: true },
-  { id: '17', name: 'Low-Fidelity Wireframing', shortEstimate: 3, longEstimate: 6, phase: 'Concept', visible: true, description: 'Develop basic wireframes to explore layout and information architecture concepts.', hasArrowAfter: true },
-  { id: '18', name: 'Paper Prototyping', shortEstimate: 2, longEstimate: 4, phase: 'Concept', visible: true, description: 'Create quick, low-cost prototypes on paper to test concepts with users early.', hasArrowAfter: true },
-  { id: '31', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Concept', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.', hasArrowAfter: true },
-  { id: '32', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Concept', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.', hasArrowAfter: true },
-  
+  { id: '13', name: 'User Stories', shortEstimate: 2, longEstimate: 4, phase: 'Concept', visible: true, description: 'Write user stories in the format "As a [user], I want to [action] so that [benefit]".', hasArrowAfter: true, blockedBy: [] },
+  { id: '14', name: 'Sketching & Brainstorming', shortEstimate: 2, longEstimate: 5, phase: 'Concept', visible: true, description: 'Generate multiple design concepts through rapid sketching and ideation sessions.', hasArrowAfter: true, blockedBy: [] },
+  { id: '15', name: 'Affinity Diagramming', shortEstimate: 1, longEstimate: 3, phase: 'Concept', visible: true, description: 'Organize ideas and insights into related groups to identify themes and priorities.', hasArrowAfter: true, blockedBy: [] },
+  { id: '16', name: 'Story Mapping & Task Flows', shortEstimate: 2, longEstimate: 4, phase: 'Concept', visible: true, description: 'Create visual representations of user flows showing how users move through tasks.', hasArrowAfter: true, blockedBy: [] },
+  { id: '17', name: 'Low-Fidelity Wireframing', shortEstimate: 3, longEstimate: 6, phase: 'Concept', visible: true, description: 'Develop basic wireframes to explore layout and information architecture concepts.', hasArrowAfter: true, blockedBy: [] },
+  { id: '18', name: 'Paper Prototyping', shortEstimate: 2, longEstimate: 4, phase: 'Concept', visible: true, description: 'Create quick, low-cost prototypes on paper to test concepts with users early.', hasArrowAfter: true, blockedBy: [] },
+  { id: '31', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Concept', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.', hasArrowAfter: true, blockedBy: [] },
+  { id: '32', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Concept', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.', hasArrowAfter: true, blockedBy: [] },
+
   // Design Phase
-  { id: '19', name: 'Wireframing', shortEstimate: 3, longEstimate: 7, phase: 'Design', visible: true, description: 'Create detailed wireframes that define layout, content hierarchy, and interactions.', hasArrowAfter: true },
-  { id: '20', name: 'UI/Visual Design', shortEstimate: 5, longEstimate: 10, phase: 'Design', visible: true, description: 'Apply visual design including typography, color, imagery, and branding elements.', hasArrowAfter: true },
-  { id: '21', name: 'Interactive Prototyping', shortEstimate: 3, longEstimate: 6, phase: 'Design', visible: true, description: 'Build clickable prototypes that simulate the user experience for testing and validation.', hasArrowAfter: true },
-  { id: '26', name: 'Motion Design', shortEstimate: 2, longEstimate: 5, phase: 'Design', visible: true, description: 'Design and create animations, transitions, and micro-interactions to enhance user experience and guide attention.', hasArrowAfter: true },
-  { id: '22', name: 'UX Writing', shortEstimate: 2, longEstimate: 4, phase: 'Design', visible: true, description: 'Craft clear, concise microcopy for UI elements, error messages, and help text.', hasArrowAfter: true },
-  { id: '33', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Design', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.', hasArrowAfter: true },
-  { id: '34', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Design', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.', hasArrowAfter: true },
-  
+  { id: '19', name: 'Wireframing', shortEstimate: 3, longEstimate: 7, phase: 'Design', visible: true, description: 'Create detailed wireframes that define layout, content hierarchy, and interactions.', hasArrowAfter: true, blockedBy: [] },
+  { id: '20', name: 'UI/Visual Design', shortEstimate: 5, longEstimate: 10, phase: 'Design', visible: true, description: 'Apply visual design including typography, color, imagery, and branding elements.', hasArrowAfter: true, blockedBy: [] },
+  { id: '21', name: 'Interactive Prototyping', shortEstimate: 3, longEstimate: 6, phase: 'Design', visible: true, description: 'Build clickable prototypes that simulate the user experience for testing and validation.', hasArrowAfter: true, blockedBy: [] },
+  { id: '26', name: 'Motion Design', shortEstimate: 2, longEstimate: 5, phase: 'Design', visible: true, description: 'Design and create animations, transitions, and micro-interactions to enhance user experience and guide attention.', hasArrowAfter: true, blockedBy: [] },
+  { id: '22', name: 'UX Writing', shortEstimate: 2, longEstimate: 4, phase: 'Design', visible: true, description: 'Craft clear, concise microcopy for UI elements, error messages, and help text.', hasArrowAfter: true, blockedBy: [] },
+  { id: '33', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Design', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.', hasArrowAfter: true, blockedBy: [] },
+  { id: '34', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Design', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.', hasArrowAfter: true, blockedBy: [] },
+
   // Deliver Phase
-  { id: '23', name: 'Design Documentation', shortEstimate: 2, longEstimate: 5, phase: 'Deliver', visible: true, description: 'Create comprehensive documentation including design specifications and guidelines.', hasArrowAfter: true },
-  { id: '24', name: 'Developer Handoff/Review', shortEstimate: 2, longEstimate: 4, phase: 'Deliver', visible: true, description: 'Collaborate with developers to ensure accurate implementation of designs.', hasArrowAfter: true },
-  { id: '25', name: 'QA', shortEstimate: 3, longEstimate: 6, phase: 'Deliver', visible: true, description: 'Test the implemented design to verify it meets requirements and quality standards.', hasArrowAfter: true },
-  { id: '35', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Deliver', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.', hasArrowAfter: true },
-  { id: '36', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Deliver', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.', hasArrowAfter: true },
+  { id: '23', name: 'Design Documentation', shortEstimate: 2, longEstimate: 5, phase: 'Deliver', visible: true, description: 'Create comprehensive documentation including design specifications and guidelines.', hasArrowAfter: true, blockedBy: [] },
+  { id: '24', name: 'Developer Handoff/Review', shortEstimate: 2, longEstimate: 4, phase: 'Deliver', visible: true, description: 'Collaborate with developers to ensure accurate implementation of designs.', hasArrowAfter: true, blockedBy: [] },
+  { id: '25', name: 'QA', shortEstimate: 3, longEstimate: 6, phase: 'Deliver', visible: true, description: 'Test the implemented design to verify it meets requirements and quality standards.', hasArrowAfter: true, blockedBy: [] },
+  { id: '35', name: 'Crit Review', shortEstimate: 1, longEstimate: 2, phase: 'Deliver', visible: true, description: 'A structured feedback session to analyze and improve the work by focusing on objectives, asking questions, identifying problems, and offering solutions collaboratively.', hasArrowAfter: true, blockedBy: [] },
+  { id: '36', name: 'Leadership Review', shortEstimate: 1, longEstimate: 2, phase: 'Deliver', visible: true, description: 'Present findings and recommendations to leadership for alignment, feedback, and approval to proceed to the next phase.', hasArrowAfter: true, blockedBy: [] },
 ];
 
 const colorOptions = [
@@ -124,6 +125,165 @@ const initialPhases: Phase[] = [
   },
 ];
 
+interface DependencyOverlayProps {
+  task: Task;
+  allTasks: Task[];
+  phases: Phase[];
+  onAddDependency: (taskId: string, prerequisiteId: string) => void;
+  onRemoveDependency: (taskId: string, prerequisiteId: string) => void;
+  onClose: () => void;
+  getValidPrerequisites: (taskId: string) => Task[];
+}
+
+const DependencyOverlay = ({
+  task,
+  allTasks,
+  phases,
+  onAddDependency,
+  onRemoveDependency,
+  onClose,
+  getValidPrerequisites,
+}: DependencyOverlayProps) => {
+  const validPrerequisites = getValidPrerequisites(task.id);
+  const selectedPrerequisites = allTasks.filter(t => task.blockedBy.includes(t.id));
+
+  // Suggest prerequisites from earlier phases
+  const phaseOrder = phases.map(p => p.id);
+  const taskPhaseIndex = phaseOrder.indexOf(task.phase);
+  const suggestedPrerequisites = validPrerequisites.filter(t => {
+    const tPhaseIndex = phaseOrder.indexOf(t.phase);
+    return tPhaseIndex < taskPhaseIndex && !task.blockedBy.includes(t.id);
+  }).slice(0, 5);
+
+  // Group valid prerequisites by phase
+  const tasksByPhase = phases.reduce((acc, phase) => {
+    const phaseTasks = validPrerequisites.filter(t => t.phase === phase.id && !task.blockedBy.includes(t.id));
+    if (phaseTasks.length > 0) {
+      acc[phase.id] = { phase, tasks: phaseTasks };
+    }
+    return acc;
+  }, {} as Record<string, { phase: Phase; tasks: Task[] }>);
+
+  return (
+    <div
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[80vh] flex flex-col"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900">Manage Dependencies</h2>
+            <p className="text-sm text-gray-600 mt-1">{task.name}</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            title="Close"
+          >
+            <X className="w-5 h-5 text-gray-600" />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          {/* Selected Prerequisites */}
+          {selectedPrerequisites.length > 0 && (
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 mb-3">Prerequisites ({selectedPrerequisites.length})</h3>
+              <div className="space-y-2">
+                {selectedPrerequisites.map(prereq => {
+                  const phase = phases.find(p => p.id === prereq.phase);
+                  return (
+                    <div
+                      key={prereq.id}
+                      className={`flex items-center justify-between p-3 ${phase?.color.bg} border ${phase?.color.border} rounded`}
+                    >
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-900">{prereq.name}</div>
+                        <div className="text-xs text-gray-600 mt-1">{phase?.name}</div>
+                      </div>
+                      <button
+                        onClick={() => onRemoveDependency(task.id, prereq.id)}
+                        className="p-1 hover:bg-red-100 rounded text-red-600"
+                        title="Remove dependency"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Suggested Prerequisites */}
+          {suggestedPrerequisites.length > 0 && (
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 mb-3">Suggested Prerequisites</h3>
+              <div className="space-y-2">
+                {suggestedPrerequisites.map(prereq => {
+                  const phase = phases.find(p => p.id === prereq.phase);
+                  return (
+                    <button
+                      key={prereq.id}
+                      onClick={() => onAddDependency(task.id, prereq.id)}
+                      className={`w-full flex items-center justify-between p-3 ${phase?.color.bg} border ${phase?.color.border} rounded hover:shadow-md transition-shadow text-left`}
+                    >
+                      <div className="flex-1">
+                        <div className="font-medium text-gray-900">{prereq.name}</div>
+                        <div className="text-xs text-gray-600 mt-1">{phase?.name}</div>
+                      </div>
+                      <Plus className="w-4 h-4 text-gray-600" />
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* All Valid Tasks Grouped by Phase */}
+          {Object.keys(tasksByPhase).length > 0 && (
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 mb-3">All Available Tasks</h3>
+              <div className="space-y-4">
+                {Object.values(tasksByPhase).map(({ phase, tasks }) => (
+                  <div key={phase.id}>
+                    <h4 className="text-xs font-semibold text-gray-700 mb-2">{phase.name}</h4>
+                    <div className="space-y-2">
+                      {tasks.map(prereq => (
+                        <button
+                          key={prereq.id}
+                          onClick={() => onAddDependency(task.id, prereq.id)}
+                          className={`w-full flex items-center justify-between p-2 ${phase.color.bg} border ${phase.color.border} rounded hover:shadow-md transition-shadow text-left`}
+                        >
+                          <div className="flex-1">
+                            <div className="text-sm font-medium text-gray-900">{prereq.name}</div>
+                          </div>
+                          <Plus className="w-4 h-4 text-gray-600" />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {validPrerequisites.length === 0 && selectedPrerequisites.length === 0 && (
+            <div className="text-center py-8 text-gray-500">
+              <p>No valid prerequisites available for this task.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 interface TaskCardProps {
   task: Task;
   index: number;
@@ -137,21 +297,35 @@ interface TaskCardProps {
   onToggleExpanded: (id: string) => void;
   onUpdateDescription: (id: string, description: string) => void;
   onToggleArrow: (id: string) => void;
+  onOpenDependencyOverlay: (id: string) => void;
+  dependentCount: number;
+  isCriticalPath: boolean;
+  isHighlighted: boolean;
+  isFaded: boolean;
+  onHoverStart: (id: string) => void;
+  onHoverEnd: () => void;
 }
 
-const TaskCard = ({ 
-  task, 
-  index, 
+const TaskCard = ({
+  task,
+  index,
   phase,
   phaseColor,
-  updateEstimate, 
-  toggleVisibility, 
-  moveTask, 
+  updateEstimate,
+  toggleVisibility,
+  moveTask,
   isLastInPhase,
   isExpanded,
   onToggleExpanded,
   onUpdateDescription,
   onToggleArrow,
+  onOpenDependencyOverlay,
+  dependentCount,
+  isCriticalPath,
+  isHighlighted,
+  isFaded,
+  onHoverStart,
+  onHoverEnd,
 }: TaskCardProps) => {
   const [{ isDragging }, drag, preview] = useDrag({
     type: 'TASK',
@@ -182,9 +356,20 @@ const TaskCard = ({
         className={`${isDragging ? 'opacity-50' : ''} ${isOver ? 'border-blue-500' : ''}`}
       >
         {/* Task Box */}
-        <div 
-          className={`border-2 ${task.visible ? phaseColor.border : 'border-gray-300'} ${task.visible ? phaseColor.bg : 'bg-gray-100'} p-4 min-w-[240px] relative cursor-pointer transition-all ${isExpanded ? 'min-h-[200px]' : ''}`}
+        <div
+          className={`
+            border-2
+            ${task.visible ? phaseColor.border : 'border-gray-300'}
+            ${task.visible ? phaseColor.bg : 'bg-gray-100'}
+            p-4 min-w-[240px] relative cursor-pointer transition-all
+            ${isExpanded ? 'min-h-[200px]' : ''}
+            ${isCriticalPath ? 'border-l-4 border-l-gray-800 shadow-sm' : ''}
+            ${isHighlighted ? 'ring-2 ring-blue-500 shadow-lg' : ''}
+            ${isFaded ? 'opacity-30' : ''}
+          `}
           id={`task-${task.id}`}
+          onMouseEnter={() => onHoverStart(task.id)}
+          onMouseLeave={onHoverEnd}
         >
           {/* Drag handle and visibility toggle */}
           <div className="absolute -left-10 top-1/2 -translate-y-1/2 flex flex-col gap-1">
@@ -250,6 +435,42 @@ const TaskCard = ({
             <div className={`text-sm text-center font-medium px-2 ${task.visible ? 'text-gray-900' : 'text-gray-400'}`}>
               {task.name}
             </div>
+
+            {/* Dependency Indicators and Link Icon */}
+            <div className="flex items-center justify-center gap-3 mt-3">
+              {/* Dependency counts */}
+              <div className="flex items-center gap-2 text-xs text-gray-600">
+                {task.blockedBy.length > 0 && (
+                  <div className="flex items-center gap-0.5" title={`Blocked by ${task.blockedBy.length} task(s)`}>
+                    <ArrowUp className="w-3 h-3" />
+                    <span className="font-semibold">{task.blockedBy.length}</span>
+                  </div>
+                )}
+                {dependentCount > 0 && (
+                  <div className="flex items-center gap-0.5" title={`Blocks ${dependentCount} task(s)`}>
+                    <ArrowDown className="w-3 h-3" />
+                    <span className="font-semibold">{dependentCount}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Link icon for managing dependencies */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onOpenDependencyOverlay(task.id);
+                }}
+                className="relative p-1 hover:bg-gray-200 rounded transition-colors"
+                title="Manage dependencies"
+              >
+                <Link2 className="w-4 h-4 text-gray-600" />
+                {task.blockedBy.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+                    {task.blockedBy.length}
+                  </span>
+                )}
+              </button>
+            </div>
           </div>
 
           {/* Expanded Description */}
@@ -310,6 +531,14 @@ interface PhaseColumnProps {
   renamePhase: (id: string, newName: string) => void;
   togglePhaseVisibility: (id: string) => void;
   removePhase: (id: string) => void;
+  onOpenDependencyOverlay: (id: string) => void;
+  getTaskDependents: (taskId: string) => Task[];
+  isOnCriticalPath: (taskId: string) => boolean;
+  hoveredTaskId: string | null;
+  getUpstreamDependencies: (taskId: string) => string[];
+  getDownstreamDependents: (taskId: string) => string[];
+  onHoverStart: (id: string) => void;
+  onHoverEnd: () => void;
 }
 
 const PhaseColumn = ({
@@ -329,6 +558,14 @@ const PhaseColumn = ({
   renamePhase,
   togglePhaseVisibility,
   removePhase,
+  onOpenDependencyOverlay,
+  getTaskDependents,
+  isOnCriticalPath,
+  hoveredTaskId,
+  getUpstreamDependencies,
+  getDownstreamDependents,
+  onHoverStart,
+  onHoverEnd,
 }: PhaseColumnProps) => {
   const [isEditingName, setIsEditingName] = useState(false);
   const [editedName, setEditedName] = useState(phase.name);
@@ -436,10 +673,44 @@ const PhaseColumn = ({
         </div>
       </div>
       
-      {/* Tasks */}
+      {/* Add Task Button (Primary - under header) */}
       {phase.visible && (
-        <div className="flex-1 p-6 pl-14 space-y-4">
-          {phaseTasks.map((task, taskIndex) => (
+        <div className="px-6 pt-4">
+          <button
+            onClick={() => addTask(phase.id)}
+            className="w-full flex items-center justify-center gap-2 py-2 border-2 border-dashed border-gray-300 rounded hover:border-gray-400 hover:bg-gray-50 transition-colors text-gray-600 hover:text-gray-800"
+            title="Add new task"
+          >
+            <Plus className="w-4 h-4" />
+            <span className="text-sm font-medium">Add Task</span>
+          </button>
+        </div>
+      )}
+
+      {/* Tasks */}
+      {phase.visible && (() => {
+        // Split tasks into critical path and flexible work
+        const criticalPathTasks = phaseTasks.filter(task => isOnCriticalPath(task.id));
+        const flexibleWorkTasks = phaseTasks.filter(task => !isOnCriticalPath(task.id));
+
+        // Sort critical path tasks by dependency depth and duration
+        const sortedCriticalTasks = [...criticalPathTasks].sort((a, b) => {
+          const aDepth = a.blockedBy.length;
+          const bDepth = b.blockedBy.length;
+          if (aDepth !== bDepth) return aDepth - bDepth;
+          return b.longEstimate - a.longEstimate;
+        });
+
+        const upstreamIds = hoveredTaskId ? getUpstreamDependencies(hoveredTaskId) : [];
+        const downstreamIds = hoveredTaskId ? getDownstreamDependents(hoveredTaskId) : [];
+
+        const renderTask = (task: Task, taskIndex: number, isCritical: boolean) => {
+          const isHighlighted = hoveredTaskId === task.id ||
+                               upstreamIds.includes(task.id) ||
+                               downstreamIds.includes(task.id);
+          const isFaded = hoveredTaskId !== null && !isHighlighted;
+
+          return (
             <TaskCard
               key={task.id}
               task={task}
@@ -449,25 +720,64 @@ const PhaseColumn = ({
               updateEstimate={updateEstimate}
               toggleVisibility={toggleVisibility}
               moveTask={moveTask}
-              isLastInPhase={taskIndex === phaseTasks.length - 1}
+              isLastInPhase={false}
               isExpanded={expandedTaskId === task.id}
               onToggleExpanded={toggleExpanded}
               onUpdateDescription={updateDescription}
               onToggleArrow={toggleArrow}
+              onOpenDependencyOverlay={onOpenDependencyOverlay}
+              dependentCount={getTaskDependents(task.id).length}
+              isCriticalPath={isCritical}
+              isHighlighted={isHighlighted}
+              isFaded={isFaded}
+              onHoverStart={onHoverStart}
+              onHoverEnd={onHoverEnd}
             />
-          ))}
-          
-          {/* Add Task Button */}
-          <button
-            onClick={() => addTask(phase.id)}
-            className="w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-gray-300 rounded hover:border-gray-400 hover:bg-gray-50 transition-colors text-gray-600 hover:text-gray-800"
-            title="Add new task"
-          >
-            <Plus className="w-5 h-5" />
-            <span className="text-sm font-medium">Add Task</span>
-          </button>
-        </div>
-      )}
+          );
+        };
+
+        return (
+          <div className="flex-1">
+            {/* Critical Path Section */}
+            {sortedCriticalTasks.length > 0 && (
+              <div className="px-6 pt-4 pb-6">
+                <div className="mb-3 flex items-center gap-2">
+                  <h3 className="text-xs font-bold text-gray-700 uppercase tracking-wide">Critical Path</h3>
+                  <div className="flex-1 h-px bg-gray-300"></div>
+                </div>
+                <div className="pl-8 space-y-4">
+                  {sortedCriticalTasks.map((task, idx) => renderTask(task, idx, true))}
+                </div>
+              </div>
+            )}
+
+            {/* Flexible Work Section */}
+            <div className="px-6 pb-6">
+              <div className="mb-3 flex items-center gap-2">
+                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wide">Flexible Work</h3>
+                <div className="flex-1 h-px bg-gray-200"></div>
+                <button
+                  onClick={() => addTask(phase.id)}
+                  className="text-xs text-gray-500 hover:text-gray-700 flex items-center gap-1"
+                  title="Add task to flexible work"
+                >
+                  <Plus className="w-3 h-3" />
+                  <span>Add</span>
+                </button>
+              </div>
+              <div className="pl-8 space-y-4">
+                {flexibleWorkTasks.length > 0 ? (
+                  flexibleWorkTasks.map((task, idx) => renderTask(task, idx, false))
+                ) : (
+                  <div className="text-center py-4 text-sm text-gray-400">
+                    No flexible tasks
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 };
@@ -480,6 +790,8 @@ export default function App() {
   const [editingPhaseName, setEditingPhaseName] = useState<string | null>(null);
   const [editingPhaseDesc, setEditingPhaseDesc] = useState<string | null>(null);
   const [showHowToUse, setShowHowToUse] = useState(false);
+  const [dependencyOverlayTaskId, setDependencyOverlayTaskId] = useState<string | null>(null);
+  const [hoveredTaskId, setHoveredTaskId] = useState<string | null>(null);
 
   const updateEstimate = (id: string, type: 'short' | 'long', value: string) => {
     const numValue = parseInt(value) || 0;
@@ -514,7 +826,7 @@ export default function App() {
 
   const addTask = (phaseId: string) => {
     const newId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    
+
     const newTask: Task = {
       id: newId,
       name: 'New Task',
@@ -524,6 +836,7 @@ export default function App() {
       visible: true,
       description: '',
       hasArrowAfter: true,
+      blockedBy: [],
     };
     
     const phaseTasks = tasks.filter(t => t.phase === phaseId);
@@ -606,6 +919,106 @@ export default function App() {
       color: colorOptions[colorIndex],
     };
     setPhases([...phases, newPhase]);
+  };
+
+  // Dependency management functions
+  const addDependency = (taskId: string, prerequisiteId: string) => {
+    setTasks(tasks.map(task =>
+      task.id === taskId && !task.blockedBy.includes(prerequisiteId)
+        ? { ...task, blockedBy: [...task.blockedBy, prerequisiteId] }
+        : task
+    ));
+  };
+
+  const removeDependency = (taskId: string, prerequisiteId: string) => {
+    setTasks(tasks.map(task =>
+      task.id === taskId
+        ? { ...task, blockedBy: task.blockedBy.filter(id => id !== prerequisiteId) }
+        : task
+    ));
+  };
+
+  const getTaskDependents = (taskId: string): Task[] => {
+    return tasks.filter(task => task.blockedBy.includes(taskId));
+  };
+
+  const getTaskDependencies = (taskId: string): Task[] => {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return [];
+    return tasks.filter(t => task.blockedBy.includes(t.id));
+  };
+
+  const wouldCreateCircularDependency = (taskId: string, prerequisiteId: string): boolean => {
+    const visited = new Set<string>();
+
+    const hasPath = (from: string, to: string): boolean => {
+      if (from === to) return true;
+      if (visited.has(from)) return false;
+      visited.add(from);
+
+      const task = tasks.find(t => t.id === from);
+      if (!task) return false;
+
+      return task.blockedBy.some(depId => hasPath(depId, to));
+    };
+
+    return hasPath(prerequisiteId, taskId);
+  };
+
+  const getValidPrerequisites = (taskId: string): Task[] => {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return [];
+
+    const phaseOrder = phases.map(p => p.id);
+    const taskPhaseIndex = phaseOrder.indexOf(task.phase);
+
+    return tasks.filter(t => {
+      if (t.id === taskId) return false;
+      const tPhaseIndex = phaseOrder.indexOf(t.phase);
+      if (tPhaseIndex > taskPhaseIndex) return false;
+      if (wouldCreateCircularDependency(taskId, t.id)) return false;
+      return true;
+    });
+  };
+
+  const getUpstreamDependencies = (taskId: string): string[] => {
+    const result = new Set<string>();
+
+    const traverse = (id: string) => {
+      const task = tasks.find(t => t.id === id);
+      if (!task) return;
+
+      task.blockedBy.forEach(depId => {
+        if (!result.has(depId)) {
+          result.add(depId);
+          traverse(depId);
+        }
+      });
+    };
+
+    traverse(taskId);
+    return Array.from(result);
+  };
+
+  const getDownstreamDependents = (taskId: string): string[] => {
+    const result = new Set<string>();
+
+    const traverse = (id: string) => {
+      const dependents = getTaskDependents(id);
+      dependents.forEach(dep => {
+        if (!result.has(dep.id)) {
+          result.add(dep.id);
+          traverse(dep.id);
+        }
+      });
+    };
+
+    traverse(taskId);
+    return Array.from(result);
+  };
+
+  const isOnCriticalPath = (taskId: string): boolean => {
+    return getTaskDependents(taskId).length > 0;
   };
 
   // Calculate total with concurrent task support
@@ -878,6 +1291,14 @@ export default function App() {
                     renamePhase={renamePhase}
                     togglePhaseVisibility={togglePhaseVisibility}
                     removePhase={removePhase}
+                    onOpenDependencyOverlay={setDependencyOverlayTaskId}
+                    getTaskDependents={getTaskDependents}
+                    isOnCriticalPath={isOnCriticalPath}
+                    hoveredTaskId={hoveredTaskId}
+                    getUpstreamDependencies={getUpstreamDependencies}
+                    getDownstreamDependents={getDownstreamDependents}
+                    onHoverStart={setHoveredTaskId}
+                    onHoverEnd={() => setHoveredTaskId(null)}
                   />
                 );
               })}
@@ -895,6 +1316,24 @@ export default function App() {
               </div>
             </div>
           </div>
+
+          {/* Dependency Overlay */}
+          {dependencyOverlayTaskId && (() => {
+            const task = tasks.find(t => t.id === dependencyOverlayTaskId);
+            if (!task) return null;
+
+            return (
+              <DependencyOverlay
+                task={task}
+                allTasks={tasks}
+                phases={phases}
+                onAddDependency={addDependency}
+                onRemoveDependency={removeDependency}
+                onClose={() => setDependencyOverlayTaskId(null)}
+                getValidPrerequisites={getValidPrerequisites}
+              />
+            );
+          })()}
 
           {/* How to Use Overlay */}
           {showHowToUse && (
