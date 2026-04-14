@@ -30,6 +30,12 @@ These phases are provided as template defaults. They can be fully edited, rename
 - **Design** — Wireframing, UI/visual design, interactive prototyping, UX writing
 - **Deliver** — Design documentation, developer handoff/review, QA
 
+## Time Calculations
+
+- **Days** — Working days for each task
+- **Weeks** — Based on 5-day work week
+- **Months** — Based on 20 working days per month
+
 ## Getting Started
 
 ```bash
@@ -43,10 +49,6 @@ npm run dev
 npm run build
 ```
 
-## Time Calculations
 
-- **Days** — Working days for each task
-- **Weeks** — Based on 5-day work week
-- **Months** — Based on 20 working days per month
 
 ---
