@@ -23,7 +23,7 @@ Use this tool to quickly model design process timelines, align cross-functional 
 7. **Review totals** — Check the Project Duration Estimates section for best case, worst case, and range calculations
 
 ## Phase Overview
-
+These phases are provided as template defaults. They can be fully edited, renamed, removed, or reordered to match your team’s workflow and project structure.
 - **Discovery** — Competitive analysis, user interviews, stakeholder interviews, contextual inquiry, market research, analytics review
 - **Define** — Synthesize research, create personas, map journeys, formulate problems, define scope, conduct task analysis
 - **Concept** — User stories, sketching, affinity diagramming, story mapping, low-fi wireframing, paper prototyping
