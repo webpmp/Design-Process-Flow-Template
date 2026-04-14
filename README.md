@@ -2,16 +2,16 @@
 
 ![Design Process Flow Template screenshot](https://github.com/webpmp/webpmp.github.io/blob/master/design-process-flow-v6.png)
 
-This repository contains a structured Design Process Flow Template built to help UX teams plan and estimate project timelines. The diagram outlines a comprehensive list of design tasks, each with best (shortest) and worst case (longest) duration estimates (in days).
+The Design Process Flow Template is a structured framework built to help UX teams plan, estimate, and organize project timelines. It outlines a comprehensive list of design tasks, each with best (shortest) and worst case (longest) duration estimates (in days), and supports task prerequisites to define dependencies and surface critical paths.
 
-## Key Features
+Key Features
+⛓️ Task prerequisites — define dependencies between tasks to establish sequencing and identify critical path items
+✅ Modular task list — hide tasks that don’t apply to your specific project
+⏱️ Dual timeline estimates — shows total project duration based on both short and long estimates
+🧭 Flexible and customizable — adapt the flow to fit your team’s design operations framework
+📊 Clear visual overview — provides visibility into project scope, dependencies, and scheduling constraints
 
-- ✅ **Modular task list** — hide tasks that don't apply to your specific project
-- ⏱️ **Dual timeline estimates** — shows total project duration based on both short and long estimates
-- 🧭 **Flexible and customizable** — adapt the flow to fit your team's design operations framework
-- 📊 **Clear visual overview** — provides visibility into project scope, dependencies, and pacing
-
-Use this tool to quickly model design process timelines, align cross-functional teams, and improve estimation accuracy across UX initiatives.
+Use this tool to quickly model design process timelines, align cross-functional teams, and improve estimation accuracy across UX initiatives while understanding which tasks are blocking others and where schedule risk accumulates.
 
 ## How to Use
 
