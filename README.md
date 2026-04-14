@@ -18,8 +18,9 @@ Use this tool to quickly model design process timelines, align cross-functional 
 2. **Edit time estimates** — Click on the day values in the top corners of each task to adjust estimates
 3. **Toggle task visibility** — Use the eye icon to show/hide tasks that are relevant to your project
 4. **Expand task details** — Click on any task to view and edit its description
-5. **Reorder tasks** — Drag tasks using the grip icon to rearrange within each phase
-6. **Review totals** — Check the Project Duration Estimates section for best case, worst case, and range calculations
+5. **Define prerequisites** — Click the link icon on a task to assign prerequisite tasks. Select all tasks that must be completed before the current task. These dependencies are used to build sequencing logic and generate a critical path across the project
+6. **Reorder tasks** — Drag tasks using the grip icon to rearrange within each phase
+7. **Review totals** — Check the Project Duration Estimates section for best case, worst case, and range calculations
 
 ## Phase Overview
 
