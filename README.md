@@ -7,7 +7,7 @@ The Design Process Flow Template is a structured framework built to help UX team
 Key Features
 - ⛓️ Task prerequisites — define dependencies between tasks to establish sequencing and identify critical path items
 - ✅ Modular task list — hide tasks that don’t apply to your specific project
-- ⏱️ Dual timeline estimates — shows total project duration based on both short and long estimates
+- 📈 Dual timeline estimates — shows total project duration based on both short and long estimates
 - 🧭 Flexible and customizable — adapt the flow to fit your team’s design operations framework
 - 📊 Clear visual overview — provides visibility into project scope, dependencies, and scheduling constraints
 
