@@ -1,7 +1,6 @@
-# Design Process Flow Template
-
 ![Design Process Flow Template screenshot](https://github.com/webpmp/webpmp.github.io/blob/master/design-process-flow-v6.png)
 
+# Design Process Flow Template
 The Design Process Flow Template is a structured framework built to help UX teams plan, estimate, and organize project timelines. It outlines a comprehensive list of design tasks, each with best (shortest) and worst case (longest) duration estimates (in days), and supports task prerequisites to define dependencies and surface critical paths.
 
 Key Features
