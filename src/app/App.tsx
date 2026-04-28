@@ -742,7 +742,7 @@ const PhaseColumn = ({
             {sortedCriticalTasks.length > 0 && (
               <div className="px-6 pt-4 pb-6">
                 <div className="mb-3 flex items-center gap-2">
-                  <h3 className="text-xs font-bold text-gray-700 uppercase tracking-wide">Critical Path</h3>
+                  <h3 className="text-xs font-bold text-gray-700 uppercase tracking-wide py-1">Critical Path</h3>
                   <div className="flex-1 h-px bg-gray-300"></div>
                 </div>
                 <div className="pl-8 space-y-4">
@@ -752,9 +752,9 @@ const PhaseColumn = ({
             )}
 
             {/* Flexible Work Section */}
-            <div className="px-6 pb-6">
+            <div className="px-6 pb-6 mt-1">
               <div className="mb-3 flex items-center gap-2">
-                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wide">Flexible Work</h3>
+                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wide py-1">Flexible Work</h3>
                 <div className="flex-1 h-px bg-gray-200"></div>
                 <button
                   onClick={() => addTask(phase.id)}
@@ -1121,7 +1121,7 @@ export default function App() {
               {/* Best Case */}
               <div className="flex items-center justify-between p-4 bg-green-50 border-2 border-green-600 rounded">
                 <div>
-                  <div className="text-xs text-gray-600 mb-1">Best Case Scenario</div>
+                  <div className="text-xs text-black font-bold mb-1">Shortest Estimate</div>
                   <div className="text-2xl font-semibold text-green-700">{getTotalShort()} days</div>
                   <div className="text-xs text-green-600 mt-1">
                     {formatDuration(getTotalShort()).weeks} weeks • {formatDuration(getTotalShort()).months} months
@@ -1137,7 +1137,7 @@ export default function App() {
               {/* Average */}
               <div className="flex items-center justify-between p-4 bg-blue-50 border-2 border-blue-600 rounded">
                 <div>
-                  <div className="text-xs text-gray-600 mb-1">Average Estimate</div>
+                  <div className="text-xs text-black font-bold mb-1">Average Estimate</div>
                   <div className="text-2xl font-semibold text-blue-700">
                     {getAverageEstimate()} days
                   </div>
@@ -1155,7 +1155,7 @@ export default function App() {
               {/* Worst Case */}
               <div className="flex items-center justify-between p-4 bg-red-50 border-2 border-red-600 rounded">
                 <div>
-                  <div className="text-xs text-gray-600 mb-1">Worst Case Scenario</div>
+                  <div className="text-xs text-black font-bold mb-1">Longest Estimate</div>
                   <div className="text-2xl font-semibold text-red-700">{getTotalLong()} days</div>
                   <div className="text-xs text-red-600 mt-1">
                     {formatDuration(getTotalLong()).weeks} weeks • {formatDuration(getTotalLong()).months} months
@@ -1166,18 +1166,6 @@ export default function App() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6" />
                   </svg>
                 </div>
-              </div>
-            </div>
-
-            {/* Legend Items */}
-            <div className="mt-6 flex gap-8 text-sm text-gray-600">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-6 bg-green-50 border border-gray-300 rounded"></div>
-                <span>Shortest estimate (days)</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-6 bg-red-50 border border-gray-300 rounded"></div>
-                <span>Longest estimate (days)</span>
               </div>
             </div>
 
